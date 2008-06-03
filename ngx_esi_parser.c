@@ -1,4 +1,4 @@
-#line 1 "parser.rl"
+#line 1 "ngx_esi_parser.rl"
 /** 
  * Copyright (c) 2008 Todd A. Fisher
  * see LICENSE
@@ -7,7 +7,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
-#include "parser.h"
+#include "ngx_esi_parser.h"
 
 #ifdef DEBUG
 static void debug_string( const char *msg, const char *str, size_t len )
@@ -118,18 +118,18 @@ static void rtrim_pointer( const char **ptr, const char *bounds, size_t *len )
   }
 }
 
-#line 276 "parser.rl"
+#line 276 "ngx_esi_parser.rl"
 
 
 
-#line 126 "parser.c"
+#line 126 "ngx_esi_parser.c"
 static const int esi_start = 309;
 static const int esi_first_final = 309;
 static const int esi_error = -1;
 
 static const int esi_en_main = 309;
 
-#line 279 "parser.rl"
+#line 279 "ngx_esi_parser.rl"
 
 /* dup the string up to len */
 char *esi_strndup( const char *str, size_t len )
@@ -225,11 +225,11 @@ int esi_parser_init( ESIParser *parser )
 {
   int cs;
   
-#line 229 "parser.c"
+#line 229 "ngx_esi_parser.c"
 	{
 	cs = esi_start;
 	}
-#line 374 "parser.rl"
+#line 374 "ngx_esi_parser.rl"
   parser->prev_state = parser->cs = cs;
   return 0;
 }
@@ -290,7 +290,7 @@ int esi_parser_execute( ESIParser *parser, const char *data, size_t length )
 //  printf( "cs: %d, ", cs );
 
   
-#line 294 "parser.c"
+#line 294 "ngx_esi_parser.c"
 	{
 	if ( p == pe )
 		goto _out;
@@ -4734,13 +4734,13 @@ case 308:
 	tr388: cs = 322; goto f8;
 
 f0:
-#line 250 "parser.rl"
+#line 250 "ngx_esi_parser.rl"
 	{
     //printf( "[%c:%d],", *p, cs );
     switch( cs ){
     case 0: /* non matching state */
       if( parser->prev_state != 12 && parser->prev_state != 7 ){ /* states following a possible end state for a tag */
-        if( parser->echobuffer && parser->echobuffer_index != -1 ){
+        if( parser->echobuffer && parser->echobuffer_index != (size_t)-1 ){
           /* send the echo buffer */
           esi_parser_echo_buffer( parser );
         }
@@ -4761,13 +4761,13 @@ f0:
   }
 	goto _again;
 f1:
-#line 250 "parser.rl"
+#line 250 "ngx_esi_parser.rl"
 	{
     //printf( "[%c:%d],", *p, cs );
     switch( cs ){
     case 0: /* non matching state */
       if( parser->prev_state != 12 && parser->prev_state != 7 ){ /* states following a possible end state for a tag */
-        if( parser->echobuffer && parser->echobuffer_index != -1 ){
+        if( parser->echobuffer && parser->echobuffer_index != (size_t)-1 ){
           /* send the echo buffer */
           esi_parser_echo_buffer( parser );
         }
@@ -4786,20 +4786,20 @@ f1:
     */
     parser->prev_state = cs;
   }
-#line 123 "parser.rl"
+#line 123 "ngx_esi_parser.rl"
 	{
     parser->mark = p;
     //debug_string( "begin", p, 1 );
   }
 	goto _again;
 f9:
-#line 250 "parser.rl"
+#line 250 "ngx_esi_parser.rl"
 	{
     //printf( "[%c:%d],", *p, cs );
     switch( cs ){
     case 0: /* non matching state */
       if( parser->prev_state != 12 && parser->prev_state != 7 ){ /* states following a possible end state for a tag */
-        if( parser->echobuffer && parser->echobuffer_index != -1 ){
+        if( parser->echobuffer && parser->echobuffer_index != (size_t)-1 ){
           /* send the echo buffer */
           esi_parser_echo_buffer( parser );
         }
@@ -4818,19 +4818,19 @@ f9:
     */
     parser->prev_state = cs;
   }
-#line 127 "parser.rl"
+#line 127 "ngx_esi_parser.rl"
 	{
 //    printf( "finish\n" );
   }
 	goto _again;
 f3:
-#line 250 "parser.rl"
+#line 250 "ngx_esi_parser.rl"
 	{
     //printf( "[%c:%d],", *p, cs );
     switch( cs ){
     case 0: /* non matching state */
       if( parser->prev_state != 12 && parser->prev_state != 7 ){ /* states following a possible end state for a tag */
-        if( parser->echobuffer && parser->echobuffer_index != -1 ){
+        if( parser->echobuffer && parser->echobuffer_index != (size_t)-1 ){
           /* send the echo buffer */
           esi_parser_echo_buffer( parser );
         }
@@ -4849,7 +4849,7 @@ f3:
     */
     parser->prev_state = cs;
   }
-#line 132 "parser.rl"
+#line 132 "ngx_esi_parser.rl"
 	{
     parser->tag_text = parser->mark+1;
     parser->tag_text_length = p - (parser->mark+1);
@@ -4857,13 +4857,13 @@ f3:
   }
 	goto _again;
 f8:
-#line 250 "parser.rl"
+#line 250 "ngx_esi_parser.rl"
 	{
     //printf( "[%c:%d],", *p, cs );
     switch( cs ){
     case 0: /* non matching state */
       if( parser->prev_state != 12 && parser->prev_state != 7 ){ /* states following a possible end state for a tag */
-        if( parser->echobuffer && parser->echobuffer_index != -1 ){
+        if( parser->echobuffer && parser->echobuffer_index != (size_t)-1 ){
           /* send the echo buffer */
           esi_parser_echo_buffer( parser );
         }
@@ -4882,7 +4882,7 @@ f8:
     */
     parser->prev_state = cs;
   }
-#line 139 "parser.rl"
+#line 139 "ngx_esi_parser.rl"
 	{
     /* trim the tag text */
     ltrim_pointer( &(parser->tag_text), p, &(parser->tag_text_length) );
@@ -4902,13 +4902,13 @@ f8:
   }
 	goto _again;
 f5:
-#line 250 "parser.rl"
+#line 250 "ngx_esi_parser.rl"
 	{
     //printf( "[%c:%d],", *p, cs );
     switch( cs ){
     case 0: /* non matching state */
       if( parser->prev_state != 12 && parser->prev_state != 7 ){ /* states following a possible end state for a tag */
-        if( parser->echobuffer && parser->echobuffer_index != -1 ){
+        if( parser->echobuffer && parser->echobuffer_index != (size_t)-1 ){
           /* send the echo buffer */
           esi_parser_echo_buffer( parser );
         }
@@ -4927,7 +4927,7 @@ f5:
     */
     parser->prev_state = cs;
   }
-#line 158 "parser.rl"
+#line 158 "ngx_esi_parser.rl"
 	{
     /* trim tag text */
     ltrim_pointer( &(parser->tag_text), p, &(parser->tag_text_length) );
@@ -4945,13 +4945,13 @@ f5:
   }
 	goto _again;
 f6:
-#line 250 "parser.rl"
+#line 250 "ngx_esi_parser.rl"
 	{
     //printf( "[%c:%d],", *p, cs );
     switch( cs ){
     case 0: /* non matching state */
       if( parser->prev_state != 12 && parser->prev_state != 7 ){ /* states following a possible end state for a tag */
-        if( parser->echobuffer && parser->echobuffer_index != -1 ){
+        if( parser->echobuffer && parser->echobuffer_index != (size_t)-1 ){
           /* send the echo buffer */
           esi_parser_echo_buffer( parser );
         }
@@ -4970,7 +4970,7 @@ f6:
     */
     parser->prev_state = cs;
   }
-#line 175 "parser.rl"
+#line 175 "ngx_esi_parser.rl"
 	{
     /* save the attribute  key start */
     parser->attr_key = parser->mark;
@@ -4985,13 +4985,13 @@ f6:
   }
 	goto _again;
 f7:
-#line 250 "parser.rl"
+#line 250 "ngx_esi_parser.rl"
 	{
     //printf( "[%c:%d],", *p, cs );
     switch( cs ){
     case 0: /* non matching state */
       if( parser->prev_state != 12 && parser->prev_state != 7 ){ /* states following a possible end state for a tag */
-        if( parser->echobuffer && parser->echobuffer_index != -1 ){
+        if( parser->echobuffer && parser->echobuffer_index != (size_t)-1 ){
           /* send the echo buffer */
           esi_parser_echo_buffer( parser );
         }
@@ -5010,7 +5010,7 @@ f7:
     */
     parser->prev_state = cs;
   }
-#line 189 "parser.rl"
+#line 189 "ngx_esi_parser.rl"
 	{
     ESIAttribute *attr;
 
@@ -5040,13 +5040,13 @@ f7:
   }
 	goto _again;
 f4:
-#line 250 "parser.rl"
+#line 250 "ngx_esi_parser.rl"
 	{
     //printf( "[%c:%d],", *p, cs );
     switch( cs ){
     case 0: /* non matching state */
       if( parser->prev_state != 12 && parser->prev_state != 7 ){ /* states following a possible end state for a tag */
-        if( parser->echobuffer && parser->echobuffer_index != -1 ){
+        if( parser->echobuffer && parser->echobuffer_index != (size_t)-1 ){
           /* send the echo buffer */
           esi_parser_echo_buffer( parser );
         }
@@ -5065,7 +5065,7 @@ f4:
     */
     parser->prev_state = cs;
   }
-#line 218 "parser.rl"
+#line 218 "ngx_esi_parser.rl"
 	{
 
     parser->tag_text = parser->mark;
@@ -5082,13 +5082,13 @@ f4:
   }
 	goto _again;
 f2:
-#line 250 "parser.rl"
+#line 250 "ngx_esi_parser.rl"
 	{
     //printf( "[%c:%d],", *p, cs );
     switch( cs ){
     case 0: /* non matching state */
       if( parser->prev_state != 12 && parser->prev_state != 7 ){ /* states following a possible end state for a tag */
-        if( parser->echobuffer && parser->echobuffer_index != -1 ){
+        if( parser->echobuffer && parser->echobuffer_index != (size_t)-1 ){
           /* send the echo buffer */
           esi_parser_echo_buffer( parser );
         }
@@ -5107,7 +5107,7 @@ f2:
     */
     parser->prev_state = cs;
   }
-#line 234 "parser.rl"
+#line 234 "ngx_esi_parser.rl"
 	{
     /* offset by 2 to account for the </ characters */
     parser->tag_text = parser->mark+2;
@@ -5124,13 +5124,13 @@ f2:
   }
 	goto _again;
 f11:
-#line 250 "parser.rl"
+#line 250 "ngx_esi_parser.rl"
 	{
     //printf( "[%c:%d],", *p, cs );
     switch( cs ){
     case 0: /* non matching state */
       if( parser->prev_state != 12 && parser->prev_state != 7 ){ /* states following a possible end state for a tag */
-        if( parser->echobuffer && parser->echobuffer_index != -1 ){
+        if( parser->echobuffer && parser->echobuffer_index != (size_t)-1 ){
           /* send the echo buffer */
           esi_parser_echo_buffer( parser );
         }
@@ -5149,24 +5149,24 @@ f11:
     */
     parser->prev_state = cs;
   }
-#line 123 "parser.rl"
+#line 123 "ngx_esi_parser.rl"
 	{
     parser->mark = p;
     //debug_string( "begin", p, 1 );
   }
-#line 127 "parser.rl"
+#line 127 "ngx_esi_parser.rl"
 	{
 //    printf( "finish\n" );
   }
 	goto _again;
 f10:
-#line 250 "parser.rl"
+#line 250 "ngx_esi_parser.rl"
 	{
     //printf( "[%c:%d],", *p, cs );
     switch( cs ){
     case 0: /* non matching state */
       if( parser->prev_state != 12 && parser->prev_state != 7 ){ /* states following a possible end state for a tag */
-        if( parser->echobuffer && parser->echobuffer_index != -1 ){
+        if( parser->echobuffer && parser->echobuffer_index != (size_t)-1 ){
           /* send the echo buffer */
           esi_parser_echo_buffer( parser );
         }
@@ -5185,7 +5185,7 @@ f10:
     */
     parser->prev_state = cs;
   }
-#line 189 "parser.rl"
+#line 189 "ngx_esi_parser.rl"
 	{
     ESIAttribute *attr;
 
@@ -5213,7 +5213,7 @@ f10:
       parser->last = parser->attributes = attr;
     }
   }
-#line 127 "parser.rl"
+#line 127 "ngx_esi_parser.rl"
 	{
 //    printf( "finish\n" );
   }
@@ -5224,7 +5224,7 @@ _again:
 		goto _resume;
 	_out: {}
 	}
-#line 434 "parser.rl"
+#line 434 "ngx_esi_parser.rl"
 
   parser->cs = cs;
 
@@ -5264,8 +5264,8 @@ _again:
 int esi_parser_finish( ESIParser *parser )
 {
   
-#line 5268 "parser.c"
-#line 473 "parser.rl"
+#line 5268 "ngx_esi_parser.c"
+#line 473 "ngx_esi_parser.rl"
   return 0;
 }
 

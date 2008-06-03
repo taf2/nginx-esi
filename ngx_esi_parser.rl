@@ -6,7 +6,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
-#include "parser.h"
+#include "ngx_esi_parser.h"
 
 #ifdef DEBUG
 static void debug_string( const char *msg, const char *str, size_t len )
@@ -252,7 +252,7 @@ static void rtrim_pointer( const char **ptr, const char *bounds, size_t *len )
     switch( cs ){
     case 0: /* non matching state */
       if( parser->prev_state != 12 && parser->prev_state != 7 ){ /* states following a possible end state for a tag */
-        if( parser->echobuffer && parser->echobuffer_index != -1 ){
+        if( parser->echobuffer && parser->echobuffer_index != (size_t)-1 ){
           /* send the echo buffer */
           esi_parser_echo_buffer( parser );
         }
