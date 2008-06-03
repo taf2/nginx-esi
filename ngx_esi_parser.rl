@@ -362,7 +362,7 @@ void esi_parser_free( ESIParser *parser )
   free( parser );
 }
 
-void esi_parser_output_handler( ESIParser *parser, output_cb output_handler )
+void esi_parser_output_handler( ESIParser *parser, esi_output_cb output_handler )
 {
   parser->output_handler = output_handler;
 }
@@ -473,12 +473,12 @@ int esi_parser_finish( ESIParser *parser )
   return 0;
 }
 
-void esi_parser_start_tag_handler( ESIParser *parser, start_tag_cb callback )
+void esi_parser_start_tag_handler( ESIParser *parser, esi_start_tag_cb callback )
 {
   parser->start_tag_handler = callback;
 }
 
-void esi_parser_end_tag_handler( ESIParser *parser, end_tag_cb callback )
+void esi_parser_end_tag_handler( ESIParser *parser, esi_end_tag_cb callback )
 {
   parser->end_tag_handler = callback;
 }

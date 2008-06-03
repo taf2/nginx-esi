@@ -34,18 +34,18 @@ ESIAttribute *esi_attribute_new( const char *name, size_t name_length, const cha
 ESIAttribute *esi_attribute_copy( ESIAttribute *attribute );
 void esi_attribute_free( ESIAttribute *attribute );
 
-typedef void (*start_tag_cb)(const void *data,
+typedef void (*esi_start_tag_cb)(const void *data,
                              const char *name_start,
                              size_t name_length,
                              ESIAttribute *attributes,
                              void *user_data);
 
-typedef void (*end_tag_cb)(const void *data,
+typedef void (*esi_end_tag_cb)(const void *data,
                            const char *name_start,
                            size_t name_length,
                            void *user_data);
 
-typedef void (*output_cb)(const void *data,
+typedef void (*esi_output_cb)(const void *data,
                           size_t length,
                           void *user_data);
 
@@ -74,9 +74,9 @@ typedef struct _ESIParser {
 
   ESIAttribute *attributes, *last;
 
-  start_tag_cb start_tag_handler;
-  end_tag_cb end_tag_handler;
-  output_cb output_handler;
+  esi_start_tag_cb start_tag_handler;
+  esi_end_tag_cb end_tag_handler;
+  esi_output_cb output_handler;
 
 } ESIParser;
 
@@ -92,21 +92,21 @@ int esi_parser_init( ESIParser *parser );
  */
 int esi_parser_execute( ESIParser *parser, const char *data, size_t length );
 /*
- * let the parser no that it has reached the end and it should flush any remaining data to the desired output device
+ * let the parser know that it has reached the end and it should flush any remaining data to the desired output device
  */
 int esi_parser_finish( ESIParser *parser );
 
 /* 
  * setup a callback to execute when a new esi: start tag is encountered
- * this is will fire for all block tags e.g. <esi:try>, <esi:attempt> and also
+ * this will fire for all block tags e.g. <esi:try>, <esi:attempt> and also
  * inline tags <esi:inline src='cache-key'/> <esi:include src='dest'/>
  */
-void esi_parser_start_tag_handler( ESIParser *parser, start_tag_cb callback );
+void esi_parser_start_tag_handler( ESIParser *parser, esi_start_tag_cb callback );
 
-void esi_parser_end_tag_handler( ESIParser *parser, end_tag_cb callback );
+void esi_parser_end_tag_handler( ESIParser *parser, esi_end_tag_cb callback );
 
 /* setup a callback to recieve data ready for output */
-void esi_parser_output_handler( ESIParser *parser, output_cb output_handler );
+void esi_parser_output_handler( ESIParser *parser, esi_output_cb output_handler );
 
 
 #endif
