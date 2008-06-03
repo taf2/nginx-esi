@@ -11,12 +11,11 @@
 #include <ngx_core.h>
 #include <ngx_event.h>
 #include <ngx_http.h>
+#include "ngx_esi_parser.h"
 
 typedef struct {
-    ngx_flag_t     enable;
-    ngx_flag_t     silent_errors;
-    ngx_flag_t     ignore_recycled_buffers;
-    ngx_array_t   *types;
-    
-    size_t         min_file_chunk;
+    ngx_flag_t     enable;          /* enable esi filter */
+    ngx_flag_t     silent_errors;   /* ignore include errors, don't raise exceptions */
+    size_t         min_file_chunk;  /* smallest size chunk */
+    size_t         max_depth;       /* how many times to follow an esi:include redirect... */
 } ngx_http_esi_loc_conf_t;

@@ -6,7 +6,6 @@
 #define ESI_PARSER_H
 #include <sys/types.h>
 
-
 char *esi_strndup( const char *str, size_t len );
 
 /* 
