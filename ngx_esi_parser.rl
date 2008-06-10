@@ -15,6 +15,8 @@ static void debug_string( const char *msg, const char *str, size_t len )
   printf( "%s :'%s'\n", msg, pstr );
   free( pstr );
 }
+#else
+#define debug_string(m,s,l)
 #endif
 
 /* define default callbacks */
@@ -40,12 +42,27 @@ esi_parser_default_output_cp(const void *data,
 {
 }
 
+/* 
+ * flush output buffer
+ */
+static void esi_parser_flush_output( ESIParser *parser )
+{
+  if( parser->output_buffer_size > 0 ) {
+    //debug_string( "esi_parser_flush_output:", parser->output_buffer, parser->output_buffer_size );
+    parser->output_handler( (void*)parser->output_buffer, parser->output_buffer_size, parser->user_data );
+    parser->output_buffer_size = 0;
+  }
+}
 /* send the character to the output handler marking it 
  * as ready for consumption, e.g. not an esi tag
  */
 static void esi_parser_echo_char( ESIParser *parser, char ch )
 {
-  parser->output_handler( (void*)&ch, 1, parser->user_data );
+  parser->output_buffer[parser->output_buffer_size++] = ch;
+  if( parser->output_buffer_size == ESI_OUTPUT_BUFFER_SIZE ) {
+    // flush the buffer to the consumer
+    esi_parser_flush_output( parser );
+  }
 }
 /* send any buffered characters to the output handler. 
  * This happens when we enter a case such as <em>  where the
@@ -53,8 +70,12 @@ static void esi_parser_echo_char( ESIParser *parser, char ch )
  */
 static void esi_parser_echo_buffer( ESIParser *parser )
 {
-//  debug_string( "echobuffer", parser->echobuffer, parser->echobuffer_index+1 );
-  parser->output_handler( parser->echobuffer, parser->echobuffer_index+1, parser->user_data );
+  size_t i = 0, len = parser->echobuffer_index + 1;;
+  //debug_string( "echobuffer", parser->echobuffer, parser->echobuffer_index+1 );
+  //parser->output_handler( parser->echobuffer, parser->echobuffer_index+1, parser->user_data );
+  for( ; i < len; ++i ) {
+    esi_parser_echo_char( parser, parser->echobuffer[i] );
+  }
 }
 /*
  * clear the buffer, no buffered characters should be emitted .
@@ -74,7 +95,7 @@ static void esi_parser_concat_to_echobuffer( ESIParser *parser, char ch )
 {
   parser->echobuffer_index++;
 
-  if( parser->echobuffer_allocated <= parser->echobuffer_index ){
+  if( parser->echobuffer_allocated <= parser->echobuffer_index ) {
     /* double the echobuffer size 
      * we're getting some crazy input if this case ever happens
      */
@@ -95,7 +116,7 @@ static void ltrim_pointer( const char **ptr, const char *bounds, size_t *len )
          **ptr == '=' ||
          **ptr == '"' ||
          **ptr == '<' ||
-         **ptr == '\'' ) && (*len > 0) && (*ptr != bounds) ){
+         **ptr == '\'' ) && (*len > 0) && (*ptr != bounds) ) {
     (*ptr)++;
     (*len)--;
   }
@@ -142,8 +163,11 @@ static void rtrim_pointer( const char **ptr, const char *bounds, size_t *len )
     rtrim_pointer( &(parser->tag_text), p, &(parser->tag_text_length) );
 
     /* send the start tag and end tag message */
+    esi_parser_flush_output( parser );
     parser->start_tag_handler( data, parser->tag_text, parser->tag_text_length, parser->attributes, parser->user_data );
+    esi_parser_flush_output( parser );
     parser->end_tag_handler( data, parser->tag_text, parser->tag_text_length, parser->user_data );
+    esi_parser_flush_output( parser );
 
     /* mark the position */
     parser->tag_text = NULL;
@@ -161,7 +185,9 @@ static void rtrim_pointer( const char **ptr, const char *bounds, size_t *len )
     rtrim_pointer( &(parser->tag_text), p, &(parser->tag_text_length) );
     
     /* send the start and end tag message */
+    esi_parser_flush_output( parser );
     parser->start_tag_handler( data, parser->tag_text, parser->tag_text_length, parser->attributes, parser->user_data );
+    esi_parser_flush_output( parser );
 
     parser->tag_text = NULL;
     parser->tag_text_length = 0;
@@ -205,11 +231,11 @@ static void rtrim_pointer( const char **ptr, const char *bounds, size_t *len )
                               parser->attr_value, parser->attr_value_length );
 
     /* add the new attribute to the list of attributes */
-    if( parser->attributes ){
+    if( parser->attributes ) {
       parser->last->next = attr;
       parser->last = attr;
     }
-    else{
+    else {
       parser->last = parser->attributes = attr;
     }
   }
@@ -225,7 +251,9 @@ static void rtrim_pointer( const char **ptr, const char *bounds, size_t *len )
     ltrim_pointer( &(parser->tag_text), p, &(parser->tag_text_length) );
     rtrim_pointer( &(parser->tag_text), p, &(parser->tag_text_length) );
 
+    esi_parser_flush_output( parser );
     parser->start_tag_handler( data, parser->tag_text, parser->tag_text_length, NULL, parser->user_data );
+    esi_parser_flush_output( parser );
 
     esi_parser_echobuffer_clear( parser );
   }
@@ -241,7 +269,9 @@ static void rtrim_pointer( const char **ptr, const char *bounds, size_t *len )
     ltrim_pointer( &(parser->tag_text), p, &(parser->tag_text_length) );
     rtrim_pointer( &(parser->tag_text), p, &(parser->tag_text_length) );
     
+    esi_parser_flush_output( parser );
     parser->end_tag_handler( data, parser->tag_text, parser->tag_text_length, parser->user_data );
+    esi_parser_flush_output( parser );
 
     esi_parser_echobuffer_clear( parser );
   }
@@ -249,7 +279,7 @@ static void rtrim_pointer( const char **ptr, const char *bounds, size_t *len )
   # process each character in the input stream for output
   action echo {
     //printf( "[%c:%d],", *p, cs );
-    switch( cs ){
+    switch( cs ) {
     case 0: /* non matching state */
       if( parser->prev_state != 12 && parser->prev_state != 7 ){ /* states following a possible end state for a tag */
         if( parser->echobuffer && parser->echobuffer_index != (size_t)-1 ){
@@ -335,11 +365,14 @@ ESIParser *esi_parser_new()
   ESIParser *parser = (ESIParser*)malloc(sizeof(ESIParser));
   parser->cs = esi_start;
   parser->mark = NULL;
+  parser->tag_text = NULL;
+  parser->attr_key = NULL;
+  parser->attr_value = NULL;
   parser->overflow_data_size = 0;
   parser->overflow_data = NULL;
 
-  /* allocate 1024 bytes for the echobuffer */
-  parser->echobuffer_allocated = 1024; /* NOTE: change this value, to reduce memory consumtion or allocations */
+  /* allocate ESI_OUTPUT_BUFFER_SIZE bytes for the echobuffer */
+  parser->echobuffer_allocated = ESI_OUTPUT_BUFFER_SIZE;
   parser->echobuffer_index = -1;
   parser->echobuffer = (char*)malloc(sizeof(char)*parser->echobuffer_allocated);
 
@@ -349,6 +382,9 @@ ESIParser *esi_parser_new()
   parser->start_tag_handler = esi_parser_default_start_cb;
   parser->end_tag_handler = esi_parser_default_end_cb;
   parser->output_handler = esi_parser_default_output_cp;
+
+  parser->output_buffer_size = 0;
+  memset( parser->output_buffer, 0, ESI_OUTPUT_BUFFER_SIZE );
 
   return parser;
 }
@@ -377,10 +413,56 @@ int esi_parser_init( ESIParser *parser )
 
 static int compute_offset( const char *mark, const char *data )
 {
-  if( mark ){
+  if( mark ) {
     return mark - data;
   }
   return -1;
+}
+
+/*
+ * scans the data buffer for a start sequence /<$/, /<e$/, /<es$/, /<esi$/, /<esi:$/
+ * returns index of if start sequence found else returns -1
+ */
+static int
+esi_parser_scan_for_start( ESIParser *parser, const char *data, size_t length )
+{
+  int i, f = -2, s = -2, len = (int)length;
+  char ch;
+
+  for( i = 0; i < len; ++i ) {
+    ch = data[i];
+    switch( ch ) {
+    case '<':
+      f = s = i;
+      break;
+    case '/':
+      if( s == (i-1) && f != -2 ) { s = i; }
+      break;
+    case 'e':
+      if( s == (i-1) && f != -2 ) { s = i; }
+      break;
+    case 's':
+      if( s == (i-1) && f != -2 ) { s = i; }
+      break;
+    case 'i':
+      if( s == (i-1) && f != -2 ) { s = i; }
+      break;
+    case ':':
+      if( s == (i-1) && f != -2 ) { s = i; return f; }
+      break;
+    default:
+      f = s = -2;
+      break;
+    }
+  }
+
+  // if s and f are still valid at end of input return f
+  if( f != -2 && s != -2 ) {
+    return f;
+  }
+  else {
+    return -1;
+  }
 }
 
 /* accept an arbitrary length string buffer
@@ -393,12 +475,25 @@ int esi_parser_execute( ESIParser *parser, const char *data, size_t length )
 {
   int cs = parser->cs;
   const char *p = data;
+  const char *eof = NULL; // ragel 6.x compat
   const char *pe = data + length;
+  int pindex;
 
   if( length == 0 ){ return cs; }
 
+  /* scan data for any '<esi:' start sequences, /<$/, /<e$/, /<es$/, /<esi$/, /<esi:$/ */
+  if( cs == 0 ) { 
+    pindex = esi_parser_scan_for_start( parser, data, length );
+    if( pindex == -1 ) {
+      for( pindex = 0; pindex < (int)length; ++pindex ) {
+        esi_parser_echo_char( parser, data[pindex] );
+      }
+      return cs;
+    }
+  }
+
   /* there's an existing overflow buffer data append the new data to the existing data */
-  if( parser->overflow_data && parser->overflow_data_size > 0 ){
+  if( parser->overflow_data && parser->overflow_data_size > 0 ) {
 
     // recompute mark, tag_text, attr_key, and attr_value since they all exist within overflow_data
     int mark_offset = compute_offset( parser->mark, parser->overflow_data );
@@ -424,7 +519,7 @@ int esi_parser_execute( ESIParser *parser, const char *data, size_t length )
 
   }
 
-  if( !parser->mark ){
+  if( !parser->mark ) {
     parser->mark = p;
   }
 
@@ -434,7 +529,7 @@ int esi_parser_execute( ESIParser *parser, const char *data, size_t length )
 
   parser->cs = cs;
 
-  if( cs != esi_start && cs != 0 ){
+  if( cs != esi_start && cs != 0 ) {
 
     /* reached the end and we're not at a termination point save the buffer as overflow */
     if( !parser->overflow_data ){
@@ -445,10 +540,16 @@ int esi_parser_execute( ESIParser *parser, const char *data, size_t length )
       int attr_value_offset = compute_offset( parser->attr_value, data );
       //debug_string( "mark before move", parser->mark, 1 );
 
-      parser->overflow_data = (char*)malloc( sizeof( char ) * length );
+      if( ESI_OUTPUT_BUFFER_SIZE > length ) {
+        parser->echobuffer_allocated = ESI_OUTPUT_BUFFER_SIZE;
+      }
+      else {
+        parser->echobuffer_allocated = length;
+      }
+      parser->overflow_data = (char*)malloc( sizeof( char ) * parser->echobuffer_allocated );
       memcpy( parser->overflow_data, data, length );
       parser->overflow_data_size = length;
-//      printf( "allocate overflow data: %ld\n", parser->overflow_data_size );
+      //printf( "allocate overflow data: %ld\n", parser->echobuffer_allocated );
 
       // in our new memory space mark will now be
       parser->mark = ( mark_offset >= 0 ) ? parser->overflow_data + mark_offset : NULL;
@@ -458,7 +559,7 @@ int esi_parser_execute( ESIParser *parser, const char *data, size_t length )
       //if( parser->mark ){ debug_string( "mark after  move", parser->mark, 1 ); } else { printf( "mark is now empty\n" ); }
     }
 
-  }else if( parser->overflow_data ){
+  }else if( parser->overflow_data ) {
     /* dump the overflow buffer execution ended at a final state */
     free( parser->overflow_data );
     parser->overflow_data = NULL;
@@ -469,7 +570,7 @@ int esi_parser_execute( ESIParser *parser, const char *data, size_t length )
 }
 int esi_parser_finish( ESIParser *parser )
 {
-  %% write eof;
+  esi_parser_flush_output( parser );
   return 0;
 }
 

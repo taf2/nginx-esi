@@ -6,6 +6,9 @@
 #define ESI_PARSER_H
 #include <sys/types.h>
 
+/* how much output to hold in memory before sending out */
+#define ESI_OUTPUT_BUFFER_SIZE 1024
+
 char *esi_strndup( const char *str, size_t len );
 
 /* 
@@ -73,6 +76,11 @@ typedef struct _ESIParser {
   size_t attr_value_length;
 
   ESIAttribute *attributes, *last;
+  
+  /* this memory will be pass to the output_cb when either it's full
+   * or eof is encountered */
+  char output_buffer[ESI_OUTPUT_BUFFER_SIZE+1];
+  size_t output_buffer_size;
 
   esi_start_tag_cb start_tag_handler;
   esi_end_tag_cb end_tag_handler;
