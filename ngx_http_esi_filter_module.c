@@ -13,6 +13,12 @@
 #include <ngx_http.h>
 #include "ngx_esi_parser.h"
 
+
+typedef struct {
+    ngx_hash_t                hash;
+    ngx_hash_keys_arrays_t    commands;
+} ngx_http_esi_main_conf_t;
+
 typedef struct {
   ngx_flag_t     enable;          /* enable esi filter */
   ngx_flag_t     silent_errors;   /* ignore include errors, don't raise exceptions */
@@ -26,8 +32,11 @@ typedef struct {
   ESIParser *parser;
 } ngx_http_esi_ctx_t;
 
+static ngx_int_t ngx_http_esi_preconfiguration(ngx_conf_t *cf);
 static ngx_int_t ngx_http_esi_filter_init(ngx_conf_t *cf);
 static char *ngx_http_esi_types(ngx_conf_t *cf, ngx_command_t *cmd, void *conf);
+static void *ngx_http_esi_create_main_conf(ngx_conf_t *cf);
+static char *ngx_http_esi_init_main_conf(ngx_conf_t *cf, void *conf);
 static void *ngx_http_esi_create_loc_conf(ngx_conf_t *cf);
 static char *ngx_http_esi_merge_loc_conf(ngx_conf_t *cf, void *parent, void *child);
 
@@ -76,11 +85,11 @@ static ngx_command_t  ngx_http_esi_filter_commands[] = {
 
 
 static ngx_http_module_t  ngx_http_esi_filter_module_ctx = {
-    NULL,                                  /* preconfiguration */
+    ngx_http_esi_preconfiguration,         /* preconfiguration */
     ngx_http_esi_filter_init,              /* postconfiguration */
 
-    NULL,                                  /* create main configuration */
-    NULL,                                  /* init main configuration */
+    ngx_http_esi_create_main_conf,         /* create main configuration */
+    ngx_http_esi_init_main_conf,           /* init main configuration */
 
     NULL,                                  /* create server configuration */
     NULL,                                  /* merge server configuration */
@@ -117,6 +126,8 @@ ngx_http_esi_types(ngx_conf_t *cf, ngx_command_t *cmd, void *conf)
     ngx_str_t   *value, *type;
     ngx_uint_t   i;
 
+    printf( "ngx_http_esi_types\n" );
+
     if (slcf->types == NULL) {
         slcf->types = ngx_array_create(cf->pool, 4, sizeof(ngx_str_t));
         if (slcf->types == NULL) {
@@ -128,6 +139,7 @@ ngx_http_esi_types(ngx_conf_t *cf, ngx_command_t *cmd, void *conf)
             return NGX_CONF_ERROR;
         }
 
+        printf( "add text/html\n" );
         type->len = sizeof("text/html") - 1;
         type->data = (u_char *) "text/html";
     }
@@ -158,6 +170,19 @@ ngx_http_esi_types(ngx_conf_t *cf, ngx_command_t *cmd, void *conf)
     return NGX_CONF_OK;
 }
 
+static ngx_int_t
+ngx_http_esi_preconfiguration(ngx_conf_t *cf)
+{
+    ngx_http_esi_main_conf_t  *smcf;
+
+    smcf = ngx_http_conf_get_module_main_conf(cf, ngx_http_esi_filter_module);
+
+    printf( "called esi pre config\n" );
+
+
+    return NGX_OK;
+}
+
 static void *
 ngx_http_esi_create_loc_conf(ngx_conf_t *cf)
 {
@@ -178,6 +203,8 @@ ngx_http_esi_create_loc_conf(ngx_conf_t *cf)
     slcf->silent_errors  = NGX_CONF_UNSET;
     slcf->min_file_chunk = NGX_CONF_UNSET_SIZE;
     slcf->max_depth      = NGX_CONF_UNSET_SIZE;
+    
+    printf( "create loc conf\n" );
 
     return slcf;
 }
@@ -191,13 +218,16 @@ ngx_http_esi_merge_loc_conf(ngx_conf_t *cf, void *parent, void *child)
 
     ngx_str_t  *type;
 
+
     ngx_conf_merge_value(conf->enable, prev->enable, 0);
     ngx_conf_merge_value(conf->silent_errors, prev->silent_errors, 0);
 
     ngx_conf_merge_size_value(conf->min_file_chunk, prev->min_file_chunk, 1024);
     ngx_conf_merge_size_value(conf->max_depth, prev->max_depth, 256);
+    
 
     if (conf->types == NULL) {
+        printf( "types\n" );
         if (prev->types == NULL) {
             conf->types = ngx_array_create(cf->pool, 1, sizeof(ngx_str_t));
             if (conf->types == NULL) {
@@ -216,6 +246,7 @@ ngx_http_esi_merge_loc_conf(ngx_conf_t *cf, void *parent, void *child)
             conf->types = prev->types;
         }
     }
+    printf( "merging esi config (enabled: %d)\n", conf->enable );
 
     return NGX_CONF_OK;
 }
@@ -227,6 +258,8 @@ ngx_http_esi_header_filter(ngx_http_request_t *r)
   ngx_str_t                *type;
   ngx_http_esi_ctx_t       *ctx;
   ngx_http_esi_loc_conf_t  *slcf;
+
+  printf( "called esi header filter\n" );
 
   slcf = ngx_http_get_module_loc_conf(r, ngx_http_esi_filter_module);
 
@@ -273,9 +306,61 @@ found:
 static ngx_int_t
 ngx_http_esi_body_filter(ngx_http_request_t *r, ngx_chain_t *in)
 {
-  return NGX_OK;
+  printf( "called esi body filter\n" );
+  return ngx_http_next_body_filter(r, in);
 }
 
+
+static void *
+ngx_http_esi_create_main_conf(ngx_conf_t *cf)
+{
+    ngx_http_esi_main_conf_t  *smcf;
+    printf( "called create esi main conf\n" );
+
+    smcf = ngx_pcalloc(cf->pool, sizeof(ngx_http_esi_main_conf_t));
+    if (smcf == NULL) {
+        return NGX_CONF_ERROR;
+    }
+
+    smcf->commands.pool = cf->pool;
+    smcf->commands.temp_pool = cf->temp_pool;
+
+    if (ngx_hash_keys_array_init(&smcf->commands, NGX_HASH_SMALL) != NGX_OK) {
+        printf( "config error in esi module\n" );
+        return NGX_CONF_ERROR;
+    }
+
+    return smcf;
+}
+
+
+static char *
+ngx_http_esi_init_main_conf(ngx_conf_t *cf, void *conf)
+{
+    ngx_http_esi_main_conf_t *smcf = conf;
+
+    ngx_hash_init_t  hash;
+
+    printf( "called esi init main conf\n" );
+
+    hash.hash = &smcf->hash;
+    hash.key = ngx_hash_key;
+    hash.max_size = 1024;
+    hash.bucket_size = ngx_cacheline_size;
+    hash.name = "esi_command_hash";
+    hash.pool = cf->pool;
+    hash.temp_pool = NULL;
+
+    if (ngx_hash_init(&hash, smcf->commands.keys.elts,
+                      smcf->commands.keys.nelts)
+        != NGX_OK)
+    {
+        printf( "config error in esi module\n" );
+        return NGX_CONF_ERROR;
+    }
+
+    return NGX_CONF_OK;
+}
 
 static ngx_int_t
 ngx_http_esi_filter_init(ngx_conf_t *cf)
@@ -285,6 +370,8 @@ ngx_http_esi_filter_init(ngx_conf_t *cf)
 
   ngx_http_next_body_filter = ngx_http_top_body_filter;
   ngx_http_top_body_filter = ngx_http_esi_body_filter;
+
+  printf( "called esi filter init 0x%d, next 0x%d\n", (int)ngx_http_top_header_filter, (int)ngx_http_next_header_filter );
 
   return NGX_OK;
 }
