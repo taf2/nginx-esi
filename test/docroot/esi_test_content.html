@@ -1,0 +1,27 @@
+<html>
+<head>
+</head>
+<body>
+  <h1>This is a test document</h1>
+  <esi:try>
+    invalid
+    <esi:attempt>
+      valid
+      <esi:include src="/fragments/test1.html" max-age="600+600"/>
+    </esi:attempt>
+    <esi:except>
+      <esi:include src="/fragments/test_failover.html"/>
+      valid
+    </esi:except>
+    invalid
+  </esi:try>
+  <esi:try>
+    <esi:attempt>
+      <esi:include src="/content/test2.html" max-age="600+600"/>
+    </esi:attempt>
+    <esi:except>
+      <esi:include src="/fragments/test_failover.html"/>
+    </esi:except>
+  </esi:try>
+</body>
+</html>

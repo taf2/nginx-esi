@@ -1,0 +1,17 @@
+<html>
+<head>
+</head>
+<body>
+  <h1>Testing whether markup within an attempt block is retained after passing through the cache</h1>
+  <esi:try>
+    <esi:attempt>
+			<p>Some markup that should not be lost</p>
+      <esi:include src="/get_test" max-age="600+600"/>
+    </esi:attempt>
+    <esi:except>
+			<p>Exception, without any includes</p>
+    </esi:except>
+  </esi:try>
+</body>
+</html>
+

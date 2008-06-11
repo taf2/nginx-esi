@@ -1,0 +1,15 @@
+<html>
+<head>
+</head>
+<body>
+  <h1>This is a test document for esi fragments being request using ajax</h1>
+  <esi:try>
+    <esi:attempt>
+      <esi:include src="/get_test" max-age="600+600"/>
+    </esi:attempt>
+    <esi:except>
+      <esi:include src="/get_test"/>
+    </esi:except>
+  </esi:try>
+</body>
+</html>

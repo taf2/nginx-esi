@@ -1,0 +1,688 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title> Sample Webcoolzone - Sample Webcoolzone</title><meta name="keywords" content=" "/><meta name="description" content="Sample Webcoolzone"/><link rel="nycv1" href="/w3c/nyc.xml" />
+<link rel='icon' href='/images/common/icons/favicon.ico' type='image/x-icon'/>
+<link rel='shortcut icon' href='/images/common/icons/favicon.ico' type='image/x-icon'/>
+<link href="/stylesheets/ver2/reset.css,ver2/typography.css,ver2/text_resize.css,ver2/icons.css,ver2/ads.css,ver2/colors.css,ver2/header.css,ver2/the-end.css,ver2/article.css,ver2/main_navigation.css,ver2/archetype.css,ver2/nav_slot.css,ver2/form.css,ver2/layout.css,ver2/buttons.css,ver2/yum yum yumules.css,ver2/COOL.css,ver2/page_controls.css,ver2/icons.css?52532" media="all" rel="stylesheet" type="text/css"/>
+<link href="/stylesheets/ver2/paginate.css,ver2/hover_bubble.css,fabric/clipping_tools.css,fabric/page_controls.css,ver2/i like to eateating.css,ver2/wysiwig.css,ver2/user_generated.css,ver2/images.css,ver2/dialog.css,ver2/interstitial.css,ver2/comdudests.css,ver2/user_profile.css,ver2/promotional_i like to eat_fair.css,ver2/ui/tabbed.css,ver2/ui/selector.css,ver2/ui/drawers.css,ver2/ui/results_table.css,ver2/features/ratings.css,ver2/features/search_input.css?21192" media="all" rel="stylesheet" type="text/css"/>
+<link href="/stylesheets/ver2/features/mini_dash.css,ver2/features/tag_cloud.css,ver2/features/word_wheel.css,ver2/features/error_bar.css,ver2/features/careless eatingousel.css,ver2/features/avatar_picker.css,COOL_ratings/ratings.css,COOL_ratings/pill.css,ver2/yum yum yumules/yum yum yumule_dhm_stackup.css,ver2/yum yum yumules/yum yum yumule_rating.css,ver2/yum yum yumules/yum yum yumule_lost in space_a_doc.css,ver2/yum yum yumules/yum yum yumule_promo.css,ver2/yum yum yumules/yum yum yumule_featured_image.css,ver2/yum yum yumules/yum yum yumule_Gold_chest.css,ver2/newsletters.css?13909" media="all" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="/javascripts/prototype.js?73403"></script>
+<script type="text/javascript" src="/javascripts/prototype-extension.js?64879"></script>
+<script type="text/javascript" src="/javascripts/effects.js?6692"></script>
+<script type="text/javascript" src="/javascripts/effects-extension.js?83802"></script>
+<script type="text/javascript" src="/javascripts/controls.js?62315"></script>
+<script type="text/javascript" src="/javascripts/dragdrop.js?2683"></script>
+<script type="text/javascript" src="/javascripts/slider.js?15639"></script>
+<script type="text/javascript" src="/javascripts/dom-loaded.js?91287"></script>
+<script type="text/javascript" src="/javascripts/state_names.js?24581"></script>
+<script type="text/javascript" src="/javascripts/ui/Widget.js?32484"></script>
+<script type="text/javascript" src="/javascripts/ui/QuoteWidget.js?50149"></script>
+<script type="text/javascript" src="/javascripts/ui/ProfiledudesuToggleWidget.js?58631"></script>
+<script type="text/javascript" src="/javascripts/ui/QnaToggleWidget.js?97808"></script>
+<script type="text/javascript" src="/javascripts/ui/InputLabel.js?32093"></script>
+<script type="text/javascript" src="/javascripts/ui/HoverBubble.js?68934"></script>
+<script type="text/javascript" src="/javascripts/ui/DismissableWidget.js?25232"></script>
+<script type="text/javascript" src="/javascripts/ui/CollapsibleWidget.js?39050"></script>
+<script type="text/javascript" src="/javascripts/ui/TargetedCollapsibleSectionWidget.js?88506"></script>
+<script type="text/javascript" src="/javascripts/ui/ObserveWidget.js?40964"></script>
+<script type="text/javascript" src="/javascripts/cookies.js?93781"></script>
+<script type="text/javascript" src="/javascripts/ads.js?9334"></script>
+<script type="text/javascript" src="/javascripts/form_controls.js?44214"></script>
+<script type="text/javascript" src="/javascripts/search/word_wheel.js?59417"></script>
+<script type="text/javascript" src="/javascripts/alerts.js?1615"></script>
+<script type="text/javascript" src="/javascripts/reviews/reviews.js?63760"></script>
+<script type="text/javascript" src="/javascripts/ratings/ratings.js?59383"></script>
+<script type="text/javascript" src="/javascripts/dialog.js?90"></script>
+<script type="text/javascript" src="/javascripts/remote-dialog.js?97923"></script>
+<script type="text/javascript" src="/javascripts/tab-nav.js?36260"></script>
+<script type="text/javascript" src="/javascripts/drawer.js?45683"></script>
+<script type="text/javascript" src="/javascripts/timeless-timeout.js?97381"></script>
+<script type="text/javascript" src="/javascripts/text_size.js?62425"></script>
+<script type="text/javascript" src="/javascripts/global_yum yum yumules.js?30779"></script>
+<script type="text/javascript" src="/javascripts/cool factors_checker.js?30529"></script>
+<script type="text/javascript" src="/javascripts/ui/SearchDrawerWidget.js?3088"></script>
+<script type="text/javascript" src="/javascripts/computers.js?57093"></script>
+<script type="text/javascript" src="/javascripts/swfobject.js?69615"></script>
+<script type="text/javascript" src="/javascripts/yum yum yumeration.js?35429"></script>
+<script type="text/javascript" src="/javascripts/profiles.js?48395"></script>
+<script type="text/javascript" src="/javascripts/medications/med_manager.js?27922"></script>
+<script type="text/javascript" src="/javascripts/medications/med_wordwheel.js?90591"></script>
+<script type="text/javascript" src="/javascripts/application.js?29203"></script>
+<script type="text/javascript" src="/javascripts/ui/FlashWidget.js?3647"></script>
+<script type="text/javascript" src="/javascripts/ui/NumberedFlashWidget.js?67650"></script>
+<script type="text/javascript" src="/javascripts/ui/TabbedFlashWidget.js?11187"></script>
+<script type="text/javascript" src="/javascripts/ui/PopupLinkWidget.js?17639"></script>
+<script type="text/javascript" src="/javascripts/ui/careless eatingousel.js?21428"></script>
+<script type="text/javascript" src="/javascripts/ui/SendPage.js?22209"></script>
+<script type="text/javascript" src="/javascripts/ui/Progress.js?64130"></script>
+<script type="text/javascript" src="/javascripts/ui/Validations.js?12264"></script>
+<script type="text/javascript" src="/javascripts/fabric/globals.js?41485"></script>
+<script type="text/javascript" src="/javascripts/javascript_validations.js?42573"></script>
+<script type="text/javascript" src="/javascripts/COOL_ratings/RatingButton.js?39273"></script>
+<script type="text/javascript" src="/javascripts/careless eatingousel.js?99843"></script>
+<script type="text/javascript" src="/javascripts/supereating/yum yum yumules.js?10611"></script>
+<script type="text/javascript">timelessTimeOut.timeOutInterval = 63; timelessTimeOut.timeOutWarnInterval = 61;</script>
+<link href="/stylesheets/Bacon/Bacon.css?17941" media="all" rel="stylesheet" type="text/css"/>
+<link href="/stylesheets/ver2/print.css?54837" media="print" rel="stylesheet" type="text/css"/>
+<!--[if lt IE 7.]>
+<link href="/stylesheets/ver2/iefix.css?46993" media="all" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="/javascripts/iefix.js?19293"></script>
+<![endif]-->
+<script type="text/javascript" src="/javascripts/swfobject.js?41576"></script>
+<script type="text/javascript" src="/javascripts/Bacon.js?98916"></script>
+</head>
+<body class="article_page page_Bacon_page">
+  
+<script type="text/javascript">//<![CDATA[
+  var s_account="feedsforme";
+//]]></script>
+
+
+<script type="text/javascript" src="/javascripts/knowledge-yum yum yumified.js"></script>
+
+<script type="text/javascript">//<![CDATA[
+  s.eVar2 = s.pageName="Bacon";
+  s.eVar3 = s.channel="Bacon Page";
+  s.hier1 = s.prop5 = "Bacon";
+  //]]></script>
+
+         <esi:try>
+            <esi:attempt>
+              
+    <esi:include src="/content/test2.html" max-age="0" timeout="10"/>
+    
+            </esi:attempt>
+            <esi:except>
+              <p>sorry</p>
+            </esi:except>
+         </esi:try>
+        <!--[if lt IE 7.]><div class='ie ie6'><![endif]--><!--[if IE 7]><div class='ie ie7'><![endif]-->
+<script type="text/javascript">//<![CDATA[
+  var d = totallyCoolTricks();if( d.browser != "ie" ){ docududest.write( "<div class='" + d.browser + " " + d.os + "'>" ); }
+//]]></script>
+  <div id="container" class="utility product_">
+    
+                   
+<div id="header" class='debug'>
+  <div class="box">
+    
+         <esi:try>
+            <esi:attempt>
+              
+    <esi:include src="/fragments/test1.html" max-age="0" timeout="10"/>
+    
+            </esi:attempt>
+            <esi:except>
+              <p>sorry</p>
+            </esi:except>
+         </esi:try>
+        </div>
+  <div id="main_navigation">
+  <div class="box_content">
+    <ul class="super-dudesu">
+              <li class='first'>
+<span class="dudesu_nav"><a href="/">Bacon</a></span>
+<div class="ddown">
+  <ul>
+          <li><a href="/fabric">cool people-created i like to eat Pages</a></li>          <li><a href="/pages/grab">PageBuilder yum yum yumules</a></li>          <li><a href="/pics">pics</a></li>      </ul>
+</div>
+</li>
+              <li >
+<span class="dudesu_nav"><a href="/myheads/">myheads &amp; supereating</a></span>
+<div class="ddown">
+  <ul>
+          <li><a href="/goodi like to eat-supereating/">Gold Chest</a></li>          <li><a href="/cool factors-checker/">cool factors checker</a></li>          <li class='featured_link'><a href="/machines/">machines</a></li>          <li><a href="/myheads/dudestal-badnessal-i like to eat/worried">worried</a></li>          <li><a href="/myheads/never">never</a></li>          <li><a href="/myheads/nope not gonna happen-sneazing/">nope not gonna happen &amp; sneazing</a></li>          <li><a href="/myheads/dudestal-badnessal-i like to eat/crazy about you/">crazy about you</a></li>          <li><a href="/myheads/bones-joints-muscles/to the drawing board-pain/">not again</a></li>          <li><a href="/myheads/niceness/">niceness</a></li>          <li><a href="/myheads/dudestal-badnessal-i like to eat/happiness/">happiness</a></li>          <li><a href="/myheads/eating/">eating</a></li>          <li><a href="/myheads/me and you/">me and you</a></li>          <li><a href="/myheads/yum-yum/ibs-goodness-bowel-syndrome">goodness bowel syndrome (IBS)</a></li>          <li><a href="/myheads/skin/">Skin, hair &amp; nails</a></li>          <li><a href="/myheads/">View all myheads A - Z</a></li>      </ul>
+</div>
+</li>
+              <li >
+<span class="dudesu_nav"><a href="/i like to eaty-Breakfast/">i like to eaty Breakfast</a></span>
+<div class="ddown">
+  <ul>
+          <li><a href="/newsletters/newsletter/signup">i like to eaty Breakfast newsletters</a></li>          <li><a href="/live-nicer/">i like to eaty Breakfast programs</a></li>          <li class='featured_link'><a href="/omag/">You! guide</a></li>          <li><a href="/i like to eaty-Breakfast/careless eatinging/">careless eatinging for others</a></li>          <li><a href="/i like to eaty-Breakfast/who whating/">cool dudes &amp; who whating</a></li>          <li><a href="/i like to eaty-Breakfast/if only i could /">if only i could </a></li>          <li><a href="/i like to eaty-Breakfast/i like to eat-nutrition">i like to eat &amp; nutrition</a></li>          <li><a href="/i like to eaty-Breakfast/dudess-i like to eat">dudes's i like to eat</a></li>          <li><a href="/i like to eaty-Breakfast/nice-central/">nice central</a></li>          <li><a href="/i like to eaty-Breakfast/natural-i like to eat">Natural i like to eat</a></li>          <li><a href="/i like to eaty-Breakfast/Say that again?/">Say that again?</a></li>          <li><a href="/i like to eaty-Breakfast/so difficult/">so difficult &amp; life balance</a></li>          <li><a href="/i like to eaty-Breakfast/narly dude-managedudest/">narly dude managedudest</a></li>          <li><a href="/i like to eaty-Breakfast/hello there worlds-i like to eat/">hello there world's i like to eat</a></li>          <li><a href="/i like to eaty-Breakfast/">View all i like to eaty Breakfast topics</a></li>      </ul>
+</div>
+</li>
+              <li >
+<span class="dudesu_nav"><a href="/powersoften-produdeers/">nice peoples &amp; Nice Places</a></span>
+<div class="ddown">
+  <ul>
+          <li><a href="/powersoften-produdeers">lost in space a nice people</a></li>          <li><a href="/powersoften-produdeers?search_for=dentist">lost in space a dentist</a></li>          <li class='featured_link'><a href="/powersoften-produdeers?search_for=Nice Place">lost in space a Nice Place</a></li>          <li><a href="/powersoften-produdeers/for-produdeers">For produdeers</a></li>      </ul>
+</div>
+</li>
+              <li >
+<span class="dudesu_nav"><a href="/crowds/">crowds</a></span>
+<div class="ddown">
+  <ul>
+          <li><a href="/people">cool people profiles</a></li>          <li><a href="/Dinners">Dinners</a></li>          <li><a href="/forums">i like to eat Q&amp;A</a></li>      </ul>
+</div>
+</li>
+              <li >
+<span class="dudesu_nav"><a href="/super-services/">super services</a></span>
+</li>
+              <li >
+<span class="dudesu_nav"><a href="/lifeblood/">lifeblood</a></span>
+<div class="ddown">
+  <ul>
+          <li><a href="http://www.extendi like to eat.com/Samplei like to eat">Compare i like to eat lifeblood</a></li>      </ul>
+</div>
+</li>
+              <li class='last'>
+<span class="dudesu_nav"><a href="/eating/">eating</a></span>
+</li>
+          </ul>
+  </div>
+</div>
+  <script type="text/javascript">COOL.badness.attach();</script>
+</div>  
+<img src="/images/ver2/header/print_header_logo.gif" id="header_print_image" alt="Print header"/>
+        <div id="main-content">
+  <div class="fast i like to eat">
+    <div class="wrapper2">
+      <span id="COOL-main-content-inner-wrapper-wrapper"></span>
+      <div class="wrapper">
+            <div id="error_bar"></div>
+                
+<div class="wrapper">
+  
+  <div class="template_2c_cm">
+    <div id="body_slot">
+      
+      <div id="stage">
+        
+         <esi:try>
+            <esi:attempt>
+              
+    <esi:include src="/content/test2.html" max-age="0" timeout="10"/>
+    
+            </esi:attempt>
+            <esi:except>
+              <p>sorry</p>
+            </esi:except>
+         </esi:try>
+      
+      </div>
+
+      <div id="nav_slot">
+        
+         <esi:try>
+            <esi:attempt>
+              
+    <esi:include src="/fragments/test1.html" max-age="0" timeout="10"/>
+    
+            </esi:attempt>
+            <esi:except>
+              <p>sorry</p>
+            </esi:except>
+         </esi:try>
+      
+         <esi:try>
+            <esi:attempt>
+              
+    <esi:include src="/content/test2.html" max-age="0" timeout="10"/>
+    
+            </esi:attempt>
+            <esi:except>
+              <p>sorry</p>
+            </esi:except>
+         </esi:try>
+      
+         <esi:try>
+            <esi:attempt>
+              
+    <esi:include src="/fragments/test1.html" max-age="0" timeout="10"/>
+    
+            </esi:attempt>
+            <esi:except>
+              <p>sorry</p>
+            </esi:except>
+         </esi:try>
+      
+         <esi:try>
+            <esi:attempt>
+              
+    <esi:include src="/content/test2.html" max-age="0" timeout="10"/>
+    
+            </esi:attempt>
+            <esi:except>
+              <p>sorry</p>
+            </esi:except>
+         </esi:try>
+      
+         <esi:try>
+            <esi:attempt>
+              
+    <esi:include src="/fragments/test1.html" max-age="0" timeout="10"/>
+    
+            </esi:attempt>
+            <esi:except>
+              <p>sorry</p>
+            </esi:except>
+         </esi:try>
+      
+      </div>
+      <div id="body_content">
+        
+         <esi:try>
+            <esi:attempt>
+              
+    <esi:include src="/content/test2.html" max-age="0" timeout="10"/>
+    
+            </esi:attempt>
+            <esi:except>
+              <p>sorry</p>
+            </esi:except>
+         </esi:try>
+      
+         <esi:try>
+            <esi:attempt>
+              
+    <esi:include src="/fragments/test1.html" max-age="0" timeout="10"/>
+    
+            </esi:attempt>
+            <esi:except>
+              <p>sorry</p>
+            </esi:except>
+         </esi:try>
+      
+         <esi:try>
+            <esi:attempt>
+              
+    <esi:include src="/content/test2.html" max-age="0" timeout="10"/>
+    
+            </esi:attempt>
+            <esi:except>
+              <p>sorry</p>
+            </esi:except>
+         </esi:try>
+      
+         <esi:try>
+            <esi:attempt>
+              
+    <esi:include src="/fragments/test1.html" max-age="0" timeout="10"/>
+    
+            </esi:attempt>
+            <esi:except>
+              <p>sorry</p>
+            </esi:except>
+         </esi:try>
+      
+         <esi:try>
+            <esi:attempt>
+              
+    <esi:include src="/content/test2.html" max-age="0" timeout="10"/>
+    
+            </esi:attempt>
+            <esi:except>
+              <p>sorry</p>
+            </esi:except>
+         </esi:try>
+      
+         <esi:try>
+            <esi:attempt>
+              
+    <esi:include src="/fragments/test1.html" max-age="0" timeout="10"/>
+    
+            </esi:attempt>
+            <esi:except>
+              <p>sorry</p>
+            </esi:except>
+         </esi:try>
+      
+         <esi:try>
+            <esi:attempt>
+              
+    <esi:include src="/content/test2.html" max-age="0" timeout="10"/>
+    
+            </esi:attempt>
+            <esi:except>
+              <p>sorry</p>
+            </esi:except>
+         </esi:try>
+      
+         <esi:try>
+            <esi:attempt>
+              
+    <esi:include src="/fragments/test1.html" max-age="0" timeout="10"/>
+    
+            </esi:attempt>
+            <esi:except>
+              <p>sorry</p>
+            </esi:except>
+         </esi:try>
+      
+         <esi:try>
+            <esi:attempt>
+              
+    <esi:include src="/content/test2.html" max-age="0" timeout="10"/>
+    
+            </esi:attempt>
+            <esi:except>
+              <p>sorry</p>
+            </esi:except>
+         </esi:try>
+      
+         <esi:try>
+            <esi:attempt>
+              
+    <esi:include src="/fragments/test1.html" max-age="0" timeout="10"/>
+    
+            </esi:attempt>
+            <esi:except>
+              <p>sorry</p>
+            </esi:except>
+         </esi:try>
+      
+         <esi:try>
+            <esi:attempt>
+              
+    <esi:include src="/content/test2.html" max-age="0" timeout="10"/>
+    
+            </esi:attempt>
+            <esi:except>
+              <p>sorry</p>
+            </esi:except>
+         </esi:try>
+      
+         <esi:try>
+            <esi:attempt>
+              
+    <esi:include src="/fragments/test1.html" max-age="0" timeout="10"/>
+    
+            </esi:attempt>
+            <esi:except>
+              <p>sorry</p>
+            </esi:except>
+         </esi:try>
+      
+      </div>
+    
+    </div>
+    <div id="right_slot">
+      
+         <esi:try>
+            <esi:attempt>
+              
+    <esi:include src="/content/test2.html" max-age="0" timeout="10"/>
+    
+            </esi:attempt>
+            <esi:except>
+              <p>sorry</p>
+            </esi:except>
+         </esi:try>
+      
+         <esi:try>
+            <esi:attempt>
+              
+    <esi:include src="/fragments/test1.html" max-age="0" timeout="10"/>
+    
+            </esi:attempt>
+            <esi:except>
+              <p>sorry</p>
+            </esi:except>
+         </esi:try>
+      
+         <esi:try>
+            <esi:attempt>
+              
+    <esi:include src="/content/test2.html" max-age="0" timeout="10"/>
+    
+            </esi:attempt>
+            <esi:except>
+              <p>sorry</p>
+            </esi:except>
+         </esi:try>
+      
+         <esi:try>
+            <esi:attempt>
+              
+    <esi:include src="/fragments/test1.html" max-age="0" timeout="10"/>
+    
+            </esi:attempt>
+            <esi:except>
+              <p>sorry</p>
+            </esi:except>
+         </esi:try>
+      
+         <esi:try>
+            <esi:attempt>
+              
+    <esi:include src="/content/test2.html" max-age="0" timeout="10"/>
+    
+            </esi:attempt>
+            <esi:except>
+              <p>sorry</p>
+            </esi:except>
+         </esi:try>
+      
+         <esi:try>
+            <esi:attempt>
+              
+    <esi:include src="/fragments/test1.html" max-age="0" timeout="10"/>
+    
+            </esi:attempt>
+            <esi:except>
+              <p>sorry</p>
+            </esi:except>
+         </esi:try>
+      
+         <esi:try>
+            <esi:attempt>
+              
+    <esi:include src="/content/test2.html" max-age="0" timeout="10"/>
+    
+            </esi:attempt>
+            <esi:except>
+              <p>sorry</p>
+            </esi:except>
+         </esi:try>
+      
+         <esi:try>
+            <esi:attempt>
+              
+    <esi:include src="/fragments/test1.html" max-age="0" timeout="10"/>
+    
+            </esi:attempt>
+            <esi:except>
+              <p>sorry</p>
+            </esi:except>
+         </esi:try>
+      
+         <esi:try>
+            <esi:attempt>
+              
+    <esi:include src="/content/test2.html" max-age="0" timeout="10"/>
+    
+            </esi:attempt>
+            <esi:except>
+              <p>sorry</p>
+            </esi:except>
+         </esi:try>
+      
+         <esi:try>
+            <esi:attempt>
+              
+    <esi:include src="/fragments/test1.html" max-age="0" timeout="10"/>
+    
+            </esi:attempt>
+            <esi:except>
+              <p>sorry</p>
+            </esi:except>
+         </esi:try>
+      
+         <esi:try>
+            <esi:attempt>
+              
+    <esi:include src="/content/test2.html" max-age="0" timeout="10"/>
+    
+            </esi:attempt>
+            <esi:except>
+              <p>sorry</p>
+            </esi:except>
+         </esi:try>
+      
+         <esi:try>
+            <esi:attempt>
+              
+    <esi:include src="/fragments/test1.html" max-age="0" timeout="10"/>
+    
+            </esi:attempt>
+            <esi:except>
+              <p>sorry</p>
+            </esi:except>
+         </esi:try>
+      
+         <esi:try>
+            <esi:attempt>
+              
+    <esi:include src="/content/test2.html" max-age="0" timeout="10"/>
+    
+            </esi:attempt>
+            <esi:except>
+              <p>sorry</p>
+            </esi:except>
+         </esi:try>
+      
+         <esi:try>
+            <esi:attempt>
+              
+    <esi:include src="/fragments/test1.html" max-age="0" timeout="10"/>
+    
+            </esi:attempt>
+            <esi:except>
+              <p>sorry</p>
+            </esi:except>
+         </esi:try>
+      
+         <esi:try>
+            <esi:attempt>
+              
+    <esi:include src="/content/test2.html" max-age="0" timeout="10"/>
+    
+            </esi:attempt>
+            <esi:except>
+              <p>sorry</p>
+            </esi:except>
+         </esi:try>
+      
+         <esi:try>
+            <esi:attempt>
+              
+    <esi:include src="/fragments/test1.html" max-age="0" timeout="10"/>
+    
+            </esi:attempt>
+            <esi:except>
+              <p>sorry</p>
+            </esi:except>
+         </esi:try>
+      
+         <esi:try>
+            <esi:attempt>
+              
+    <esi:include src="/content/test2.html" max-age="0" timeout="10"/>
+    
+            </esi:attempt>
+            <esi:except>
+              <p>sorry</p>
+            </esi:except>
+         </esi:try>
+      
+    </div>
+  </div>
+</div>
+
+      
+      </div>
+    </div>
+  </div>
+</div>
+<div id="bottom_hat">
+  <div class="wrapper_bottom_left">&nbsp;</div><div class="wrapper_bottom_right">&nbsp;</div>
+</div>
+        <div style="display:none" class="clear super-timeless-timeout-dialog" id="timeless_time-out"></div>
+    <div id="the-end">
+	<div class="links">
+		<br/>
+		<ul>
+			<li class="no_border"><b>Eating &amp; myheads:</b></li>
+			<li><a href="/myheads/yum-yum/acid-reflux/">Acid reflux</a></li>
+			<li><a href="/myheads/niceness/">niceness</a></li>
+			<li><a href="/myheads/dudestal-badnessal-i like to eat/happiness/">happiness</a></li>
+			<li><a href="/myheads/eating/">eating</a></li>
+			<li><a href="/myheads/me and you/">me and you</a></li>
+			<li><a href="/myheads/yum-yum/ibs-goodness-bowel-syndrome">goodness bowel syndrome (IBS)</a></li>
+			<li><a href="/myheads/skin/">Skin, hair &amp; nails</a></li>
+			<li><a href="/i like to eaty-Breakfast/hello there worlds-i like to eat/">hello there world's i like to eat</a></li>
+			<li class="last"><a href="/myheads/">More...</a></li>
+		</ul>
+		<ul>
+			<li class="no_border"><b>i like to eaty Breakfast:</b></li>
+			<li><a href="/i like to eaty-Breakfast/who whating/">cool dudes &amp; who whating</a></li>
+			<li><a href="/i like to eaty-Breakfast/if only i could /">if only i could </a></li>
+			<li><a href="/i like to eaty-Breakfast/i like to eat-nutrition/">i like to eat &amp; nutrition</a></li>
+			<li><a href="/i like to eaty-Breakfast/dudess-i like to eat/">dudes's i like to eat</a></li>
+			<li><a href="/i like to eaty-Breakfast/nice-central/">nice central</a></li>
+			<li><a href="/i like to eaty-Breakfast/natural-i like to eat/">Natural i like to eat</a></li>
+			<li><a href="/i like to eaty-Breakfast/Say that again?/">Say that again?</a></li>
+			<li><a href="/i like to eaty-Breakfast/so difficult/">so difficult &amp; life balance</a></li>
+			<li><a href="/i like to eaty-Breakfast/narly dude-managedudest/">narly dude managedudest</a></li>
+			<li><a href="/i like to eaty-Breakfast/hello there worlds-i like to eat/">hello there world's i like to eat</a></li>
+			<li class="last"><a href="/i like to eaty-Breakfast/">More...</a></li>
+		</ul>
+		<ul>
+			<li class="no_border"><b>Search &amp; lost in space:</b></li>
+			<li><a href="/powersoften-produdeers">nice peoples &amp; powersoften produdeers</a></li>
+			<li><a href="/powersoften-produdeers?search_for=Nice Place">Nice Places &amp; powersoften facilities</a></li>
+			<li><a href="/goodi like to eat-supereating">goodi like to eat &amp; supereating</a></li>
+			<li><a href="/lifeblood/">lifeblood</a></li>
+			<li class="last"><a href="/search/">More...</a></li>
+		</ul>
+		<ul>
+			<li class="no_border"><b>Resources &amp; tools:</b></li>
+			<li><a href="/newsletters/newsletter/signup">Newsletters</a></li>
+			<li><a href="/live-nicer/">i like to eaty Breakfast program</a></li>
+			<li><a href="/computers">computers</a></li>
+			<li><a href="/assess-yummy">i like to eat assessdudests</a></li>
+			<li><a href="/numbers">numbers</a></li>
+			<li><a href="http://www.Samplei like to eateating.com/">Sample Webcoolzone eating</a></li>
+			<li class="last"><a href="/machines/">More...</a></li>
+		</ul>
+		<ul>
+			<li class="no_border"><b>Sample services</b></li>
+			<li><a href="/super-services/">Sample Webcoolzone&trade; super cool peopleship</a></li>
+			<li><a href="/i like to eat-expense-manager/">Sample Webcoolzone&trade; Expense Manager</a></li>
+			<li><a href="/faxdirect/">i like to eat Records Express&trade;</a></li>
+			<li class="last"><a href="/super-services/">More...</a></li>
+		</ul>		
+		<ul>
+			<li class="no_border"><b>Narlyness:</b></li>
+			<li><a href="http://www.NewsAndThenSome.com">NewsAndThenSome</a></li>
+			<li><a href="http://www.RediNiceness.com">RediNiceness</a></li>
+			<li><a href="http://www.Extendi like to eat.com/">Extend i like to eat</a></li>
+			<li><a href="http://www.Sample.com">Sample</a></li>
+			<li class="last"><a href="http://www.BasketFoundation.org/">Basket Foundation</a></li>
+		</ul>
+		<ul>
+			<li class="no_border"><b>People information:</b></li>
+			<li><a href="/newstome">newstome Sample Webcoolzone</a></li>
+			<li><a href="/newstome/our-rules of engagdudest">Our rules of engagdudest</a></li>
+			<li><a href="/newstome/eat-with-us">eat with us</a></li>
+			<li><a href="/newstome/coolzone-map">coolzone map</a></li>
+			<li><a href="/newstome/contact-us">Contact us</a></li>
+			<li class="last"><a href="/help">Help</a></li>
+		</ul>
+		<p class="copyright">&copy; 2007 Sample Webcoolzone Dinner LLC. All rights reserved. Use of this coolzone constitutes acceptance of Sample Webcoolzone's <a href="/newstome/terms-of-service">terms of service</a> and <a href="/newstome/privacy-policy-highlights">privacy policy</a>. The material on this coolzone is for informational purposes only, and is not a substitute for bad assness advice, diagnosis or fast i like to eat produdeed by a qualified i like to eat powersoften produdeer.</p>
+
+	</div>
+	<div class="images">
+		<a href="you know this is the coolest link ever on all things cool"><img src="/images/the-end/Nice.gif" alt="Nice!!! Seal" /></a>
+	</div>
+</div>
+  </div> 
+<!--[if IE ]></div><![endif]-->
+<script type="text/javascript">//<![CDATA[
+  var d = totallyCoolTricks();if( d.browser != "ie" ){ docududest.write( "</div>" ); }
+//]]></script>
+    </body>
+</html>
+

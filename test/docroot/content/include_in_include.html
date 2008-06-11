@@ -1,0 +1,15 @@
+<html>
+<head>
+</head>
+<body>
+  <h1>This test will determine whether or not we can request multiple esi fragments within a single fragment</h1>
+  <esi:try>
+    <esi:attempt>
+      <esi:include src="/fragments/test3.html" max-age="600+600"/>
+    </esi:attempt>
+    <esi:except>
+      <esi:include src="/fragments/test3.html"/>
+    </esi:except>
+  </esi:try>
+</body>
+</html>

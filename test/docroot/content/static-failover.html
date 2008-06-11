@@ -1,0 +1,20 @@
+<html>
+<body>
+<h1>This is the main weblog view</h1>
+Here's an article:<br/>
+<!-- The alt thing below is just an experiment and a demo of using the alt attribute -->
+<esi:include src="/fragments/test1.html" method="GET" redirect="no" timeout="2"/>
+
+<esi:include src="/fragments/test1.html" method="GET" redirect="no" timeout="2"/>
+
+
+<esi:try> 
+  <esi:attempt>
+    <esi:include src="/will-respond-with-a-400"/> 
+  </esi:attempt>
+  <esi:except> 
+    <a href="www.akamai.com">www.example.com </a>
+  </esi:except> 
+</esi:try>
+</body>
+</html>
