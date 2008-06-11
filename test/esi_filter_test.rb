@@ -183,20 +183,6 @@ class EsiFilterTest < Test::Unit::TestCase
     end
   end
 
-  def test_cookies_proxied
-    Net::HTTP.start("localhost", 9997) do |h|
-      post_str = "key=value"
-      req = h.post("/post_test",post_str)
-      assert_not_nil req
-      assert_not_nil req.header
-      assert_not_nil req.body
-      assert_equal Net::HTTPOK, req.header.class
-      assert_match TEST_COOKIE1, req.header["Set-Cookie"]
-      assert_match TEST_COOKIE2, req.header["Set-Cookie"]
-      assert_match TEST_COOKIE3, req.header["Set-Cookie"]
-    end
-  end
-
 	def test_markup_in_attempt_passed_through
     Net::HTTP.start("localhost", 9997) do |h|
       res = h.get("/content/test3.html")

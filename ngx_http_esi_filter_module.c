@@ -246,7 +246,7 @@ ngx_http_esi_merge_loc_conf(ngx_conf_t *cf, void *parent, void *child)
             conf->types = prev->types;
         }
     }
-    printf( "merging esi config (enabled: %d)\n", conf->enable );
+    printf( "merging esi config (enabled: %d)\n", (int)conf->enable );
 
     return NGX_CONF_OK;
 }
