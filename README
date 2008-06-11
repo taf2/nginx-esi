@@ -1,1 +1,15 @@
+=About
+
 An nginx esi filter module
+
+=Tests
+
+rake start
+rake test
+rake stop
+
+or
+
+rake start
+
+wget http://127.0.0.1:9997/
