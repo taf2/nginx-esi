@@ -9,8 +9,14 @@ class EsiFilterTest < Test::Unit::TestCase
 
   def setup
     ESI::Server.start
+    if !defined?($started)
+      $started = true
+      system("rake start")
+      at_exit { system("rake stop") }
+    end
   end
 
+=begin
   def test_more_web_server
     results = hit([ "http://localhost:9997/esi_test_content.html", "http://localhost:9997/esi_mixed_content.html"])
 
@@ -20,6 +26,7 @@ class EsiFilterTest < Test::Unit::TestCase
 		end
     check_status results, String
 	end
+=end
 
   def test_simple_esi
     Net::HTTP.start("localhost", 9997) do |h|
@@ -36,6 +43,7 @@ class EsiFilterTest < Test::Unit::TestCase
     end
   end
 
+=begin
   def test_large_document
     Net::HTTP.start("localhost", 9997) do |h|
       req = h.get("/large-no-cache.html")
@@ -193,6 +201,7 @@ class EsiFilterTest < Test::Unit::TestCase
 			assert_match /<p>Some markup that should not be lost<\/p>/, res.body
 		end
 	end
+=end
 
 =begin
   def test_surrogate_control_header
@@ -219,6 +228,7 @@ class EsiFilterTest < Test::Unit::TestCase
   end
 =end
 
+=begin
   def test_invalidation
     Net::HTTP.start("localhost", 9997) do |h|
       res = h.get("/esi_test_content.html")
@@ -260,6 +270,7 @@ class EsiFilterTest < Test::Unit::TestCase
     assert !cached?( FRAGMENT_TEST2_URI ), "Error Fragment should not be cached!"
   end
 
+=end
 
 end
 

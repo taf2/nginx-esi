@@ -38,19 +38,19 @@ ESIAttribute *esi_attribute_copy( ESIAttribute *attribute );
 void esi_attribute_free( ESIAttribute *attribute );
 
 typedef void (*esi_start_tag_cb)(const void *data,
-                             const char *name_start,
-                             size_t name_length,
-                             ESIAttribute *attributes,
-                             void *user_data);
+                                 const char *name_start,
+                                 size_t name_length,
+                                 ESIAttribute *attributes,
+                                 void *user_data);
 
 typedef void (*esi_end_tag_cb)(const void *data,
-                           const char *name_start,
-                           size_t name_length,
-                           void *user_data);
+                               const char *name_start,
+                               size_t name_length,
+                               void *user_data);
 
 typedef void (*esi_output_cb)(const void *data,
-                          size_t length,
-                          void *user_data);
+                              size_t length,
+                              void *user_data);
 
 typedef struct _ESIParser {
   int cs;
