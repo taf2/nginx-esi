@@ -17,7 +17,12 @@
 
 void debug_string( const char *msg, int length )
 {
-  fwrite( msg, sizeof(char), length, stdout );
+  if( msg && length > 0 ) {
+    fwrite( msg, sizeof(char), length, stdout );
+  }
+  else {
+    printf("(NULL)");
+  }
 }
 
 typedef struct {
@@ -355,8 +360,8 @@ ngx_http_esi_body_filter(ngx_http_request_t *r, ngx_chain_t *in)
 
   for( chain_link = in; chain_link != NULL; chain_link = chain_link->next ) {
     size = ngx_buf_size(chain_link->buf);
-    printf("buf size: %d, \n", (int)size );
-    //debug_string( (const char*)chain_link->buf->pos, (int)size );
+    printf("buf size: %d, ", (int)size );
+    debug_string( (const char*)chain_link->buf->pos, (int)size );
     ctx->parser->user_data = (void*)chain_link;
     esi_parser_execute( ctx->parser, (const char*)chain_link->buf->pos, (size_t)size );
     if( chain_link->buf->last_buf ) {

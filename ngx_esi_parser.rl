@@ -479,7 +479,7 @@ int esi_parser_execute( ESIParser *parser, const char *data, size_t length )
   const char *pe = data + length;
   int pindex;
 
-  if( length == 0 ){ return cs; }
+  if( length == 0 || data == 0 ){ return cs; }
 
   /* scan data for any '<esi:' start sequences, /<$/, /<e$/, /<es$/, /<esi$/, /<esi:$/ */
   if( cs == 0 ) { 
