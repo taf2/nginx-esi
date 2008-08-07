@@ -297,6 +297,7 @@ found:
 
   ngx_http_set_ctx(r, ctx, ngx_http_esi_filter_module);
 
+  r->filter_need_in_memory = 1;
   /* TODO: add request info to ctx */
 
   if (r == r->main) {
@@ -360,13 +361,16 @@ ngx_http_esi_body_filter(ngx_http_request_t *r, ngx_chain_t *in)
 
   for( chain_link = in; chain_link != NULL; chain_link = chain_link->next ) {
     size = ngx_buf_size(chain_link->buf);
-    printf("buf size: %d, ", (int)size );
-    debug_string( (const char*)chain_link->buf->pos, (int)size );
+
+    //printf("buf size: %d, link: %d, buf: '", (int)size, count ); debug_string( (const char*)chain_link->buf->start, (int)size ); printf("'\n");
     ctx->parser->user_data = (void*)chain_link;
     esi_parser_execute( ctx->parser, (const char*)chain_link->buf->pos, (size_t)size );
+
     if( chain_link->buf->last_buf ) {
       has_last_buffer  = 1;
       break;
+    }
+    else {
     }
     ++count;
   }
