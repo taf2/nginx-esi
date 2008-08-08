@@ -1,3 +1,7 @@
 ngx_addon_name=ngx_http_esi_filter_module
 HTTP_AUX_FILTER_MODULES="$HTTP_AUX_FILTER_MODULES ngx_http_esi_filter_module"
-NGX_ADDON_SRCS="$NGX_ADDON_SRCS $ngx_addon_dir/ngx_http_esi_filter_module.c $ngx_addon_dir/ngx_esi_parser.c"
+NGX_ADDON_SRCS="$NGX_ADDON_SRCS $ngx_addon_dir/ngx_http_esi_filter_module.c \
+                $ngx_addon_dir/ngx_esi_parser.c $ngx_addon_dir/ngx_esi_tag.c \
+                $ngx_addon_dir/ngx_buf_util.c "
+CORE_CFLAGS="$CORE_CFLAGS -g"
+CORE_LIBS="$CORE_LIBS -g"

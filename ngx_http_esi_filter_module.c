@@ -7,23 +7,9 @@
  * This module is model'ed after ssi module
  */
 
-#include <ngx_config.h>
-#include <ngx_core.h>
-#include <ngx_event.h>
-#include <ngx_http.h>
-#include "ngx_esi_parser.h"
-#include <stdlib.h>
-#include <string.h>
-
-void debug_string( const char *msg, int length )
-{
-  if( msg && length > 0 ) {
-    fwrite( msg, sizeof(char), length, stdout );
-  }
-  else {
-    printf("(NULL)");
-  }
-}
+#include "ngx_esi_tag.h"
+#include "ngx_http_esi_filter_module.h"
+#include "ngx_buf_util.h"
 
 typedef struct {
     ngx_hash_t                hash;
@@ -39,9 +25,6 @@ typedef struct {
   size_t         max_depth;       /* how many times to follow an esi:include redirect... */
 } ngx_http_esi_loc_conf_t;
 
-typedef struct {
-  ESIParser *parser;
-} ngx_http_esi_ctx_t;
 
 static ngx_int_t ngx_http_esi_preconfiguration(ngx_conf_t *cf);
 static ngx_int_t ngx_http_esi_filter_init(ngx_conf_t *cf);
@@ -289,7 +272,6 @@ ngx_http_esi_header_filter(ngx_http_request_t *r)
 
 found:
 
-  printf( "enable esi filtering\n" );
   ctx = ngx_pcalloc(r->pool, sizeof(ngx_http_esi_ctx_t));
   if (ctx == NULL) {
       return NGX_ERROR;
@@ -297,11 +279,18 @@ found:
 
   ngx_http_set_ctx(r, ctx, ngx_http_esi_filter_module);
 
+  ctx->request = r;
+  ctx->root_tag = NULL;
+  ctx->open_tag = NULL;
+  /* allocate some output buffers */
+  ctx->last_buf = ctx->chain = ngx_alloc_chain_link(r->pool);
+  ctx->last_buf->buf = ctx->chain->buf = NULL;
+  ctx->last_buf->next = ctx->chain->next = NULL;
+  ctx->dcount = 0;
+
   r->filter_need_in_memory = 1;
-  /* TODO: add request info to ctx */
 
   if (r == r->main) {
-    printf("clearing content length header\n" );
     ngx_http_clear_content_length(r);
     ngx_http_clear_last_modified(r);
   }
@@ -312,25 +301,142 @@ found:
 static void
 esi_start_tag( const void *data, const char *name_start, size_t length, ESIAttribute *attributes, void *context )
 {
-  printf("start tag:%d ", (int)length );
-  debug_string( name_start, length );
-  printf("\n" );
+  ESITag *tag = NULL;
+  ngx_http_esi_ctx_t *ctx = (ngx_http_esi_ctx_t*)context;
+
+  if( !strncmp("esi:try",name_start,length) ) {
+    tag = esi_tag_new(ESI_TRY, ctx);
+  }
+  else if( !strncmp("esi:attempt",name_start,length) ) {
+    tag = esi_tag_new(ESI_ATTEMPT, ctx);
+  }
+  else if( !strncmp("esi:except",name_start,length) ) {
+    tag = esi_tag_new(ESI_EXCEPT, ctx);
+  }
+  else if( !strncmp("esi:include",name_start,length) ) {
+    tag = esi_tag_new(ESI_INCLUDE, ctx);
+  }
+  else if( !strncmp("esi:invalidate",name_start,length) ) {
+    tag = esi_tag_new(ESI_INVALIDATE, ctx);
+  }
+  else if( !strncmp("esi:vars",name_start,length) ) {
+    tag = esi_tag_new(ESI_VARS, ctx);
+  }
+  else if( !strncmp("esi:remove",name_start,length) ) {
+    tag = esi_tag_new(ESI_REMOVE, ctx);
+  }
+  else {
+    //XXX: invalid tag report it
+    printf("invalid start tag\n");debug_string( name_start, length ); printf("\n" );
+    return;
+  }
+  if( ctx->root_tag ) {
+    ESITag *last = ctx->root_tag;
+    while( last->next ) {
+      last = last->next;
+    }
+    last->next = tag;
+  }
+  else {
+    ctx->root_tag = tag;
+  }
+  ctx->open_tag = tag;
+  esi_tag_start( tag );
+  printf("start tag:%d ", (int)length ); debug_string( name_start, length ); printf("\n" );
 }
 
 static void
 esi_end_tag( const void *data, const char *name_start, size_t length, void *context )
 {
-  printf("end tag:%d ", (int)length );
-  debug_string( name_start, length );
-  printf("\n" );
+  ngx_http_esi_ctx_t *ctx = (ngx_http_esi_ctx_t*)context;
+
+  if( !strncmp("esi:try",name_start,length) && ctx->root_tag ) {
+    if( ctx->root_tag->type == ESI_TRY ) {
+      esi_tag_close( ctx->root_tag );
+      ctx->open_tag = ctx->root_tag = NULL;
+    }
+    else {
+      ctx->open_tag = esi_tag_close_children( ctx->root_tag, ESI_TRY );
+    }
+  }
+  else if( !strncmp("esi:attempt",name_start,length) && ctx->root_tag ) {
+    if( ctx->root_tag->type == ESI_ATTEMPT ) {
+      esi_tag_close( ctx->root_tag );
+      ctx->open_tag = ctx->root_tag = NULL;
+    }
+    else {
+      ctx->open_tag = esi_tag_close_children( ctx->root_tag, ESI_ATTEMPT );
+    }
+  }
+  else if( !strncmp("esi:except",name_start,length) && ctx->root_tag ) {
+    if( ctx->root_tag->type == ESI_EXCEPT ) {
+      esi_tag_close( ctx->root_tag );
+      ctx->open_tag = ctx->root_tag = NULL;
+    }
+    else {
+      ctx->open_tag = esi_tag_close_children( ctx->root_tag, ESI_EXCEPT );
+    }
+  }
+  else if( !strncmp("esi:include",name_start,length) && ctx->root_tag ) {
+    if( ctx->root_tag->type == ESI_INCLUDE ) {
+      esi_tag_close( ctx->root_tag );
+      ctx->open_tag = ctx->root_tag = NULL;
+    }
+    else {
+      ctx->open_tag = esi_tag_close_children( ctx->root_tag, ESI_INCLUDE );
+    }
+  }
+  else if( !strncmp("esi:invalidate",name_start,length) && ctx->root_tag ) {
+    if( ctx->root_tag->type == ESI_INVALIDATE ) {
+      esi_tag_close( ctx->root_tag );
+      ctx->open_tag = ctx->root_tag = NULL;
+    }
+    else {
+      ctx->open_tag = esi_tag_close_children( ctx->root_tag, ESI_INVALIDATE );
+    }
+  }
+  else if( !strncmp("esi:vars",name_start,length) && ctx->root_tag ) {
+    if( ctx->root_tag->type == ESI_VARS ) {
+      esi_tag_close( ctx->root_tag );
+      ctx->open_tag = ctx->root_tag = NULL;
+    }
+    else {
+      ctx->open_tag = esi_tag_close_children( ctx->root_tag, ESI_VARS );
+    }
+  }
+  else if( !strncmp("esi:remove",name_start,length) && ctx->root_tag ) {
+    if( ctx->root_tag->type == ESI_REMOVE ) {
+      esi_tag_close( ctx->root_tag );
+      ctx->open_tag = ctx->root_tag = NULL;
+    }
+    else {
+      ctx->open_tag = esi_tag_close_children( ctx->root_tag, ESI_REMOVE );
+    }
+  }
+  else {
+    printf("invalid end tag");debug_string( name_start, length ); printf("\n" );
+  }
+//  printf("end tag:%d ", (int)length ); debug_string( name_start, length ); printf("\n" );
 }
 
 static void
 esi_output( const void *data, size_t length, void *context )
 {
-  printf("output char len: %d \n", (int)length );
-  //debug_string( (const char*)data, (int)length );
-  printf("\n");
+  ngx_buf_t *buf;
+  ngx_http_esi_ctx_t *ctx = (ngx_http_esi_ctx_t*)context;
+
+  if( ctx->root_tag && ctx->open_tag ) {
+    buf = esi_tag_buffer( ctx->open_tag, data, length );
+  }
+  else {
+    buf = ngx_buf_from_data( ctx->request->pool, data, length );
+  }
+
+  if( buf ) {
+    ctx->dcount++;
+    ctx->last_buf = ngx_chain_append_buffer( ctx->request->pool, ctx->last_buf, buf );
+  }
+  //printf("output char len: %d \n", (int)length );debug_string( (const char*)data, (int)length );printf("\n");
 }
 
 static ngx_int_t
@@ -348,44 +454,55 @@ ngx_http_esi_body_filter(ngx_http_request_t *r, ngx_chain_t *in)
     return ngx_http_next_body_filter(r, in);
   }
 
-  if( ctx->parser == NULL ) {
+  ctx->request = r;
+  ctx->root_tag = NULL;
+  ctx->open_tag = NULL;
+
+  if( !ctx->parser ) {
     ctx->parser = esi_parser_new();
     esi_parser_init( ctx->parser );
-    ctx->parser->user_data = (void*)r;
+    ctx->parser->user_data = (void*)ctx;
     esi_parser_start_tag_handler( ctx->parser, esi_start_tag );
     esi_parser_end_tag_handler( ctx->parser, esi_end_tag );
     esi_parser_output_handler( ctx->parser, esi_output );
   }
 
-  printf( "called esi body filter\n" );
+//  printf( "called esi body filter\n" );
 
   for( chain_link = in; chain_link != NULL; chain_link = chain_link->next ) {
     size = ngx_buf_size(chain_link->buf);
 
     //printf("buf size: %d, link: %d, buf: '", (int)size, count ); debug_string( (const char*)chain_link->buf->start, (int)size ); printf("'\n");
-    ctx->parser->user_data = (void*)chain_link;
     esi_parser_execute( ctx->parser, (const char*)chain_link->buf->pos, (size_t)size );
 
     if( chain_link->buf->last_buf ) {
+      esi_parser_finish( ctx->parser );
       has_last_buffer  = 1;
       break;
     }
     else {
+      // hrm... ?
     }
     ++count;
   }
-  printf("walked %d chains\n", count );
 
+  ctx->last_buf->buf->last_buf = 1;
+  printf( "debugging buffer\n" );
+  count = 0;
+  for( chain_link = ctx->chain; chain_link != NULL; chain_link = chain_link->next ) {
+    size = ngx_buf_size(chain_link->buf);
+    printf("buf size: %d, link: %d of %d, buf: '", (int)size, count, ctx->dcount ); debug_string( (const char*)chain_link->buf->pos, (int)size ); printf("'\n");
+    ++count;
+  }
+  
   if( has_last_buffer ) {
-    esi_parser_finish( ctx->parser );
-    printf( "found last buffer\n" );
     esi_parser_free( ctx->parser );
+    ctx->parser = NULL;
   }
 
-  return ngx_http_next_body_filter(r, in);
-    
+  //return ngx_http_next_body_filter(r, in);
+  return ngx_http_next_body_filter(r, ctx->chain);
 }
-
 
 static void *
 ngx_http_esi_create_main_conf(ngx_conf_t *cf)

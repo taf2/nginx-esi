@@ -19,7 +19,6 @@ typedef enum {
 
 typedef struct _ESITag {
   ngx_http_esi_ctx_t *ctx; /* context stores request info */
-  ngx_chain_t *chain; /* a buffer chain to store buffered content */
   esi_tag_t type; /* tag type */
   int depth; /* request depth */
   struct _ESITag *next; /* children of this tag e.g.
@@ -27,12 +26,12 @@ typedef struct _ESITag {
                            try has 2 children attempt and include, and include has one child include */
 } ESITag;
 
-ESITag *esi_tag_new(esi_tag_t tag);
+ESITag *esi_tag_new(esi_tag_t tag, ngx_http_esi_ctx_t *ctx);
 void esi_tag_free(ESITag *tag);
 void esi_tag_start(ESITag *tag);
 void esi_tag_close(ESITag *tag);
-void esi_tag_close_children( ESITag *tag, esi_tag_t type );
-void esi_tag_buffer(ESITag *tag, ngx_chain_t *chain);
+ESITag *esi_tag_close_children( ESITag *tag, esi_tag_t type );
+ngx_buf_t *esi_tag_buffer(ESITag *tag, const void *data, size_t length);
 void esi_tag_debug(ESITag *tag);
 
 int esi_vars_filter( ngx_chain_t *chain );
