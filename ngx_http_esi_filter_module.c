@@ -286,7 +286,6 @@ found:
   ctx->last_buf = ctx->chain = ngx_alloc_chain_link(r->pool);
   ctx->last_buf->buf = ctx->chain->buf = NULL;
   ctx->last_buf->next = ctx->chain->next = NULL;
-  ctx->dcount = 0;
 
   r->filter_need_in_memory = 1;
 
@@ -366,7 +365,6 @@ esi_parser_output_cb( const void *data, size_t length, void *context )
   }
 
   if( buf ) {
-    ctx->dcount++;
     ctx->last_buf = ngx_chain_append_buffer( ctx->request->pool, ctx->last_buf, buf );
   }
   //printf("output char len: %d \n", (int)length );debug_string( (const char*)data, (int)length );printf("\n");
@@ -426,7 +424,7 @@ ngx_http_esi_body_filter(ngx_http_request_t *r, ngx_chain_t *in)
   count = 0;
   for( chain_link = ctx->chain; chain_link != NULL; chain_link = chain_link->next ) {
     size = ngx_buf_size(chain_link->buf);
-    printf("buf size: %d, link: %d of %d, buf: '", (int)size, count, ctx->dcount ); debug_string( (const char*)chain_link->buf->pos, (int)size ); printf("'\n");
+    printf("buf size: %d, link: %d, buf: '", (int)size, count ); debug_string( (const char*)chain_link->buf->pos, (int)size ); printf("'\n");
     ++count;
   }
 #endif

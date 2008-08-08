@@ -52,9 +52,9 @@ esi_tag_t esi_tag_str_to_type( const char *tag_name, size_t length )
 static void esi_tag_start_include(ESITag *tag, ESIAttribute *attributes)
 {
   ESIAttribute *attr = attributes;
-  printf( "esi:include\n" );
+//  printf( "esi:include\n" );
   while( attr ) {
-    printf( "\t%s => %s\n", attr->name, attr->value );
+//    printf( "\t%s => %s\n", attr->name, attr->value );
     attr = attr->next;
   }
 }
@@ -65,6 +65,7 @@ void esi_tag_start(ESITag *tag, ESIAttribute *attributes)
     case ESI_TRY:
       break;
     case ESI_ATTEMPT:
+      tag->ctx->exception_raised = 0; /* reset the exception raised state to 0 */
       break;
     case ESI_EXCEPT:
       break;
@@ -168,8 +169,10 @@ ngx_buf_t *esi_tag_buffer(ESITag *tag, const void *data, size_t length)
     case ESI_ATTEMPT:
       return ngx_buf_from_data( tag->ctx->request->pool, data, length );
     case ESI_EXCEPT:
-      /* TODO: check if an exception occurred while processing the attempt before returing this buffer */
-      return ngx_buf_from_data( tag->ctx->request->pool, data, length );
+      if( tag->ctx->exception_raised ) {
+        return ngx_buf_from_data( tag->ctx->request->pool, data, length );
+      }
+      /* fall through */
     case ESI_INCLUDE:
     case ESI_INVALIDATE:
     case ESI_REMOVE:

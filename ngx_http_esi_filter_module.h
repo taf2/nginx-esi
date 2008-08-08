@@ -21,7 +21,9 @@ typedef struct {
   ngx_http_request_t *request;
   ngx_chain_t *chain; /* store buffered content */
   ngx_chain_t *last_buf;
-  int dcount; 
+
+  unsigned exception_raised:1; /* this is toggled to 1 if an exception is raised while processing an attempt tag */
+
 } ngx_http_esi_ctx_t;
 
 #endif /* _NGX_HTTP_ESI_FILTER_H_INCLUDED_ */
