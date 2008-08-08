@@ -23,6 +23,7 @@ typedef struct {
   ngx_chain_t *last_buf;
 
   unsigned exception_raised:1; /* this is toggled to 1 if an exception is raised while processing an attempt tag */
+  unsigned ignore_tag:1; /* this is toggled to 1 when for some reason typically no exception was raised so the tags should not be processed */
 
 } ngx_http_esi_ctx_t;
 

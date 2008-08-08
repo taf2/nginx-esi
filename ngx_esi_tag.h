@@ -27,7 +27,7 @@ typedef struct _ESITag {
 
 ESITag *esi_tag_new(esi_tag_t tag, ngx_http_esi_ctx_t *ctx);
 void esi_tag_free(ESITag *tag);
-void esi_tag_start(ESITag *tag, ESIAttribute *attributes);
+void esi_tag_open(ESITag *tag, ESIAttribute *attributes);
 void esi_tag_close(ESITag *tag);
 ESITag *esi_tag_close_children( ESITag *tag, esi_tag_t type );
 ngx_buf_t *esi_tag_buffer(ESITag *tag, const void *data, size_t length);

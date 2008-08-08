@@ -305,8 +305,7 @@ esi_parser_start_tag_cb( const void *data, const char *name_start, size_t length
   esi_tag_t type = esi_tag_str_to_type( name_start, length );
 
   if( type == ESI_NONE ) {
-    //XXX: invalid tag report it
-    printf("invalid start tag\n");debug_string( name_start, length ); printf("\n" );
+    ngx_log_error(NGX_LOG_ERR, ctx->request->connection->log, 0, "Invalid ESI Tag!");
     return;
   }
 
@@ -323,7 +322,7 @@ esi_parser_start_tag_cb( const void *data, const char *name_start, size_t length
     ctx->root_tag = tag;
   }
   ctx->open_tag = tag;
-  esi_tag_start( tag , attributes );
+  esi_tag_open( tag , attributes );
 //  printf("start tag:%d ", (int)length ); debug_string( name_start, length ); printf("\n" );
 }
 
@@ -334,7 +333,7 @@ esi_parser_end_tag_cb( const void *data, const char *name_start, size_t length, 
   esi_tag_t type = esi_tag_str_to_type( name_start, length );
 
   if( type == ESI_NONE ) {
-    printf("invalid end tag");debug_string( name_start, length ); printf("\n" );
+    ngx_log_error(NGX_LOG_ERR, ctx->request->connection->log, 0, "Invalid ESI Tag!");
     return;
   }
 

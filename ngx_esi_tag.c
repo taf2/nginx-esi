@@ -49,17 +49,90 @@ esi_tag_t esi_tag_str_to_type( const char *tag_name, size_t length )
   return ESI_NONE;
 }
 
+static ngx_int_t
+ngx_http_esi_stub_output(ngx_http_request_t *r, void *data, ngx_int_t rc)
+{
+  ngx_chain_t  *out;
+  if (rc == NGX_ERROR || r->connection->error || r->request_output) {
+      return rc;
+  }
+
+  ngx_log_debug2(NGX_LOG_DEBUG_HTTP, r->connection->log, 0,
+                 "ssi stub output: \"%V?%V\"", &r->uri, &r->args);
+
+  out = data;
+
+  if (!r->header_sent) {
+    if (ngx_http_set_content_type(r) == NGX_ERROR) {
+      return NGX_ERROR;
+    }
+
+    if (ngx_http_send_header(r) == NGX_ERROR) {
+      return NGX_ERROR;
+    }
+  }
+
+  return ngx_http_output_filter(r, out);
+}
+
 static void esi_tag_start_include(ESITag *tag, ESIAttribute *attributes)
 {
-  ESIAttribute *attr = attributes;
+  ngx_int_t                      rc; 
+  ngx_str_t                      uri, args;
+  ngx_http_request_t            *sr;
+  ESIAttribute                  *attr = attributes;
+  ngx_http_request_t            *request = tag->ctx->request;
+  ngx_pool_t                    *pool = request->pool;
+  ngx_uint_t                     flags = 0;
+  ngx_http_post_subrequest_t    *psr;
+  ngx_chain_t                   *link;
+  ngx_buf_t                     *buf;
+
+  flags |= NGX_HTTP_SUBREQUEST_IN_MEMORY;
+  args.len = 0;
+  args.data = NULL;
+
 //  printf( "esi:include\n" );
   while( attr ) {
 //    printf( "\t%s => %s\n", attr->name, attr->value );
+    if( !ngx_strcmp( attr->name, "src" ) ) { 
+      uri.len = strlen(attr->value)+1;
+      uri.data =  ngx_palloc(pool, uri.len );
+      ngx_memcpy( uri.data, attr->value, uri.len );
+      printf( "uri: %s\n", uri.data );
+    }
     attr = attr->next;
   }
+
+  if( uri.len > 0 ) {
+    psr = ngx_palloc(pool, sizeof(ngx_http_post_subrequest_t));
+    if( psr == NULL ) {
+      return; //return NGX_ERROR;
+    }
+    /* attach the handler */
+    psr->handler = ngx_http_esi_stub_output;
+
+    /* allocate a buffer */
+    buf = ngx_alloc_buf(pool);
+    if( buf == NULL ) {
+      return; //return NGX_ERROR;
+    }
+    link = ngx_alloc_chain_link(pool);
+    if( link == NULL ) {
+      return; //return NGX_ERROR;
+    }
+    link->buf = buf;
+    link->next = NULL;
+
+    psr->data = link;
+
+    rc = ngx_http_subrequest(request, &uri, &args, &sr, psr, flags);
+  }
+
+  ngx_pfree( pool, uri.data );
 }
 
-void esi_tag_start(ESITag *tag, ESIAttribute *attributes)
+void esi_tag_open(ESITag *tag, ESIAttribute *attributes)
 {
   switch(tag->type) {
     case ESI_TRY:
@@ -68,9 +141,12 @@ void esi_tag_start(ESITag *tag, ESIAttribute *attributes)
       tag->ctx->exception_raised = 0; /* reset the exception raised state to 0 */
       break;
     case ESI_EXCEPT:
+      if( !tag->ctx->exception_raised ) {
+        tag->ctx->ignore_tag = 1;
+      }
       break;
     case ESI_INCLUDE:
-      esi_tag_start_include( tag, attributes );
+      if( !tag->ctx->ignore_tag ) { esi_tag_start_include( tag, attributes ); }
       break;
     case ESI_INVALIDATE:
       break;
@@ -85,6 +161,27 @@ void esi_tag_start(ESITag *tag, ESIAttribute *attributes)
 }
 void esi_tag_close(ESITag *tag)
 {
+  switch(tag->type) {
+    case ESI_TRY:
+      break;
+    case ESI_ATTEMPT:
+      tag->ctx->exception_raised = 0; /* reset the exception raised state to 0 */
+      break;
+    case ESI_EXCEPT:
+      if( !tag->ctx->exception_raised ) { tag->ctx->ignore_tag = 0; }
+      tag->ctx->exception_raised = 0; /* reset the exception raised state to 0 */
+      break;
+    case ESI_INCLUDE:
+      break;
+    case ESI_INVALIDATE:
+      break;
+    case ESI_VARS:
+      break;
+    case ESI_REMOVE:
+      break;
+    default:
+      break;
+  }
 //  printf("close tag: "); esi_tag_debug( tag );
   esi_tag_free( tag );
 }
