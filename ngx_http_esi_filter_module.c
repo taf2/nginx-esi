@@ -437,6 +437,7 @@ ngx_http_esi_body_filter(ngx_http_request_t *r, ngx_chain_t *in)
   }
 
   //return ngx_http_next_body_filter(r, in);
+  ngx_free_chain(r->pool, in);
   return ngx_http_next_body_filter(r, ctx->chain);
 }
 
