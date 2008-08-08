@@ -8,7 +8,6 @@ ESITag *esi_tag_new(esi_tag_t type, ngx_http_esi_ctx_t *ctx)
   t->type = type;
   t->ctx = ctx;
   t->next = NULL;
-  t->depth = 0;
   return t;
 }
 void esi_tag_free(ESITag *tag)
@@ -50,8 +49,37 @@ esi_tag_t esi_tag_str_to_type( const char *tag_name, size_t length )
   return ESI_NONE;
 }
 
-void esi_tag_start(ESITag *tag)
+static void esi_tag_start_include(ESITag *tag, ESIAttribute *attributes)
 {
+  ESIAttribute *attr = attributes;
+  printf( "esi:include\n" );
+  while( attr ) {
+    printf( "\t%s => %s\n", attr->name, attr->value );
+    attr = attr->next;
+  }
+}
+
+void esi_tag_start(ESITag *tag, ESIAttribute *attributes)
+{
+  switch(tag->type) {
+    case ESI_TRY:
+      break;
+    case ESI_ATTEMPT:
+      break;
+    case ESI_EXCEPT:
+      break;
+    case ESI_INCLUDE:
+      esi_tag_start_include( tag, attributes );
+      break;
+    case ESI_INVALIDATE:
+      break;
+    case ESI_VARS:
+      break;
+    case ESI_REMOVE:
+      break;
+    default:
+      break;
+  }
 //  printf("start "); esi_tag_debug(tag);
 }
 void esi_tag_close(ESITag *tag)

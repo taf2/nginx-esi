@@ -7,10 +7,10 @@
     invalid
     <esi:attempt>
       valid
-      <esi:include src="/fragments/test1.html" max-age="600+600"/>
+      <esi:include src="/test1.html" max-age="600+600"/>
     </esi:attempt>
     <esi:except>
-      <esi:include src="/fragments/test_failover.html"/>
+      <esi:include src="/test_failover.html"/>
       valid
     </esi:except>
     invalid
@@ -20,7 +20,7 @@
       <esi:include src="/content/test2.html" max-age="600+600"/>
     </esi:attempt>
     <esi:except>
-      <esi:include src="/fragments/test_failover.html"/>
+      <esi:include src="/test_failover.html"/>
     </esi:except>
   </esi:try>
 </body>
