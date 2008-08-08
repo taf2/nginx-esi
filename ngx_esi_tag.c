@@ -26,11 +26,11 @@ void esi_tag_free(ESITag *tag)
 
 void esi_tag_start(ESITag *tag)
 {
-  printf("start "); esi_tag_debug(tag);
+//  printf("start "); esi_tag_debug(tag);
 }
 void esi_tag_close(ESITag *tag)
 {
-  printf("close tag: "); esi_tag_debug( tag );
+//  printf("close tag: "); esi_tag_debug( tag );
   esi_tag_free( tag );
 }
 

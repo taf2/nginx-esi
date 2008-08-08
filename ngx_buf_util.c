@@ -4,7 +4,7 @@ ngx_chain_t *ngx_chain_append_buffer(ngx_pool_t *pool, ngx_chain_t *chain, ngx_b
 {
   /* add the new buffer to the last_buf in the chain */
   if( chain->buf ) {
-    printf( "append to chain: [" ); debug_string( (const char*)buf->pos, ngx_buf_size(buf) );printf("]\n");
+//    printf( "append to chain: [" ); debug_string( (const char*)buf->pos, ngx_buf_size(buf) );printf("]\n");
 
     /* allocate a new buffer link */
     chain->next = ngx_alloc_chain_link(pool);
@@ -16,7 +16,7 @@ ngx_chain_t *ngx_chain_append_buffer(ngx_pool_t *pool, ngx_chain_t *chain, ngx_b
     //ctx->last_buf = chain->next;
   }
   else {
-    printf( "assign to chain: [" ); debug_string( (const char*)buf->pos, ngx_buf_size(buf) );printf("]\n");
+//    printf( "assign to chain: [" ); debug_string( (const char*)buf->pos, ngx_buf_size(buf) );printf("]\n");
     chain->buf = buf;
     chain->next = NULL;
     return chain;
