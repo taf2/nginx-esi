@@ -496,6 +496,5 @@ ngx_http_esi_filter_init(ngx_conf_t *cf)
   ngx_http_next_body_filter = ngx_http_top_body_filter;
   ngx_http_top_body_filter = ngx_http_esi_body_filter;
 
-
   return NGX_OK;
 }

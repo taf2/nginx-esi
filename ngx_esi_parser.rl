@@ -169,6 +169,11 @@ static void rtrim_pointer( const char **ptr, const char *bounds, size_t *len )
     parser->end_tag_handler( data, parser->tag_text, parser->tag_text_length, parser->user_data );
     esi_parser_flush_output( parser );
 
+    if( parser->attributes ) {
+      esi_attribute_free( parser->attributes );
+      parser->attributes = NULL;
+    }
+
     /* mark the position */
     parser->tag_text = NULL;
     parser->tag_text_length = 0;
@@ -188,7 +193,13 @@ static void rtrim_pointer( const char **ptr, const char *bounds, size_t *len )
     esi_parser_flush_output( parser );
     parser->start_tag_handler( data, parser->tag_text, parser->tag_text_length, parser->attributes, parser->user_data );
     esi_parser_flush_output( parser );
+    
+    if( parser->attributes ) {
+      esi_attribute_free( parser->attributes );
+      parser->attributes = NULL;
+    }
 
+    /* mark the position */
     parser->tag_text = NULL;
     parser->tag_text_length = 0;
     parser->mark = p;
@@ -254,6 +265,11 @@ static void rtrim_pointer( const char **ptr, const char *bounds, size_t *len )
     esi_parser_flush_output( parser );
     parser->start_tag_handler( data, parser->tag_text, parser->tag_text_length, NULL, parser->user_data );
     esi_parser_flush_output( parser );
+    
+    if( parser->attributes ) {
+      esi_attribute_free( parser->attributes );
+      parser->attributes = NULL;
+    }
 
     esi_parser_echobuffer_clear( parser );
   }
@@ -268,7 +284,7 @@ static void rtrim_pointer( const char **ptr, const char *bounds, size_t *len )
     
     ltrim_pointer( &(parser->tag_text), p, &(parser->tag_text_length) );
     rtrim_pointer( &(parser->tag_text), p, &(parser->tag_text_length) );
-    
+ 
     esi_parser_flush_output( parser );
     parser->end_tag_handler( data, parser->tag_text, parser->tag_text_length, parser->user_data );
     esi_parser_flush_output( parser );

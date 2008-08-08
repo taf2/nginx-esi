@@ -139,7 +139,7 @@ static void rtrim_pointer( const char **ptr, const char *bounds, size_t *len )
   }
 }
 
-#line 306 "ngx_esi_parser.rl"
+#line 322 "ngx_esi_parser.rl"
 
 
 
@@ -163,7 +163,7 @@ static const int esi_error = -1;
 
 static const int esi_en_main = 75;
 
-#line 309 "ngx_esi_parser.rl"
+#line 325 "ngx_esi_parser.rl"
 
 /* dup the string up to len */
 char *esi_strndup( const char *str, size_t len )
@@ -269,7 +269,7 @@ int esi_parser_init( ESIParser *parser )
 	{
 	cs = esi_start;
 	}
-#line 410 "ngx_esi_parser.rl"
+#line 426 "ngx_esi_parser.rl"
   parser->prev_state = parser->cs = cs;
   return 0;
 }
@@ -1303,7 +1303,7 @@ case 79:
 	tr98: cs = 79; goto f8;
 
 f0:
-#line 280 "ngx_esi_parser.rl"
+#line 296 "ngx_esi_parser.rl"
 	{
     //printf( "[%c:%d],", *p, cs );
     switch( cs ) {
@@ -1330,7 +1330,7 @@ f0:
   }
 	goto _again;
 f1:
-#line 280 "ngx_esi_parser.rl"
+#line 296 "ngx_esi_parser.rl"
 	{
     //printf( "[%c:%d],", *p, cs );
     switch( cs ) {
@@ -1362,7 +1362,7 @@ f1:
   }
 	goto _again;
 f10:
-#line 280 "ngx_esi_parser.rl"
+#line 296 "ngx_esi_parser.rl"
 	{
     //printf( "[%c:%d],", *p, cs );
     switch( cs ) {
@@ -1393,7 +1393,7 @@ f10:
   }
 	goto _again;
 f3:
-#line 280 "ngx_esi_parser.rl"
+#line 296 "ngx_esi_parser.rl"
 	{
     //printf( "[%c:%d],", *p, cs );
     switch( cs ) {
@@ -1426,7 +1426,7 @@ f3:
   }
 	goto _again;
 f8:
-#line 280 "ngx_esi_parser.rl"
+#line 296 "ngx_esi_parser.rl"
 	{
     //printf( "[%c:%d],", *p, cs );
     switch( cs ) {
@@ -1464,6 +1464,11 @@ f8:
     parser->end_tag_handler( data, parser->tag_text, parser->tag_text_length, parser->user_data );
     esi_parser_flush_output( parser );
 
+    if( parser->attributes ) {
+      esi_attribute_free( parser->attributes );
+      parser->attributes = NULL;
+    }
+
     /* mark the position */
     parser->tag_text = NULL;
     parser->tag_text_length = 0;
@@ -1474,7 +1479,7 @@ f8:
   }
 	goto _again;
 f5:
-#line 280 "ngx_esi_parser.rl"
+#line 296 "ngx_esi_parser.rl"
 	{
     //printf( "[%c:%d],", *p, cs );
     switch( cs ) {
@@ -1499,7 +1504,7 @@ f5:
     */
     parser->prev_state = cs;
   }
-#line 182 "ngx_esi_parser.rl"
+#line 187 "ngx_esi_parser.rl"
 	{
     /* trim tag text */
     ltrim_pointer( &(parser->tag_text), p, &(parser->tag_text_length) );
@@ -1509,7 +1514,13 @@ f5:
     esi_parser_flush_output( parser );
     parser->start_tag_handler( data, parser->tag_text, parser->tag_text_length, parser->attributes, parser->user_data );
     esi_parser_flush_output( parser );
+    
+    if( parser->attributes ) {
+      esi_attribute_free( parser->attributes );
+      parser->attributes = NULL;
+    }
 
+    /* mark the position */
     parser->tag_text = NULL;
     parser->tag_text_length = 0;
     parser->mark = p;
@@ -1519,7 +1530,7 @@ f5:
   }
 	goto _again;
 f6:
-#line 280 "ngx_esi_parser.rl"
+#line 296 "ngx_esi_parser.rl"
 	{
     //printf( "[%c:%d],", *p, cs );
     switch( cs ) {
@@ -1544,7 +1555,7 @@ f6:
     */
     parser->prev_state = cs;
   }
-#line 201 "ngx_esi_parser.rl"
+#line 212 "ngx_esi_parser.rl"
 	{
     /* save the attribute  key start */
     parser->attr_key = parser->mark;
@@ -1559,7 +1570,7 @@ f6:
   }
 	goto _again;
 f7:
-#line 280 "ngx_esi_parser.rl"
+#line 296 "ngx_esi_parser.rl"
 	{
     //printf( "[%c:%d],", *p, cs );
     switch( cs ) {
@@ -1584,7 +1595,7 @@ f7:
     */
     parser->prev_state = cs;
   }
-#line 215 "ngx_esi_parser.rl"
+#line 226 "ngx_esi_parser.rl"
 	{
     ESIAttribute *attr;
 
@@ -1614,7 +1625,7 @@ f7:
   }
 	goto _again;
 f4:
-#line 280 "ngx_esi_parser.rl"
+#line 296 "ngx_esi_parser.rl"
 	{
     //printf( "[%c:%d],", *p, cs );
     switch( cs ) {
@@ -1639,7 +1650,7 @@ f4:
     */
     parser->prev_state = cs;
   }
-#line 244 "ngx_esi_parser.rl"
+#line 255 "ngx_esi_parser.rl"
 	{
 
     parser->tag_text = parser->mark;
@@ -1653,12 +1664,17 @@ f4:
     esi_parser_flush_output( parser );
     parser->start_tag_handler( data, parser->tag_text, parser->tag_text_length, NULL, parser->user_data );
     esi_parser_flush_output( parser );
+    
+    if( parser->attributes ) {
+      esi_attribute_free( parser->attributes );
+      parser->attributes = NULL;
+    }
 
     esi_parser_echobuffer_clear( parser );
   }
 	goto _again;
 f2:
-#line 280 "ngx_esi_parser.rl"
+#line 296 "ngx_esi_parser.rl"
 	{
     //printf( "[%c:%d],", *p, cs );
     switch( cs ) {
@@ -1683,7 +1699,7 @@ f2:
     */
     parser->prev_state = cs;
   }
-#line 262 "ngx_esi_parser.rl"
+#line 278 "ngx_esi_parser.rl"
 	{
     /* offset by 2 to account for the </ characters */
     parser->tag_text = parser->mark+2;
@@ -1702,7 +1718,7 @@ f2:
   }
 	goto _again;
 f12:
-#line 280 "ngx_esi_parser.rl"
+#line 296 "ngx_esi_parser.rl"
 	{
     //printf( "[%c:%d],", *p, cs );
     switch( cs ) {
@@ -1738,7 +1754,7 @@ f12:
   }
 	goto _again;
 f11:
-#line 280 "ngx_esi_parser.rl"
+#line 296 "ngx_esi_parser.rl"
 	{
     //printf( "[%c:%d],", *p, cs );
     switch( cs ) {
@@ -1763,7 +1779,7 @@ f11:
     */
     parser->prev_state = cs;
   }
-#line 215 "ngx_esi_parser.rl"
+#line 226 "ngx_esi_parser.rl"
 	{
     ESIAttribute *attr;
 
@@ -1810,12 +1826,12 @@ _again:
 //    printf( "finish\n" );
   }
 	break;
-#line 1814 "ngx_esi_parser.c"
+#line 1830 "ngx_esi_parser.c"
 	}
 	}
 
 	}
-#line 529 "ngx_esi_parser.rl"
+#line 545 "ngx_esi_parser.rl"
 
   parser->cs = cs;
 
