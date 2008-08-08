@@ -34,6 +34,7 @@ ESITag *esi_tag_close_children( ESITag *tag, esi_tag_t type );
 ngx_buf_t *esi_tag_buffer(ESITag *tag, const void *data, size_t length);
 void esi_tag_debug(ESITag *tag);
 
+esi_tag_t esi_tag_str_to_type( const char *tag_name, size_t length );
 int esi_vars_filter( ngx_chain_t *chain );
 
 

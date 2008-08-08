@@ -795,33 +795,16 @@ esi_start_tag( const void *data, const char *name_start, size_t length, ESIAttri
 {
   ESITag *tag = NULL;
   ngx_http_esi_ctx_t *ctx = (ngx_http_esi_ctx_t*)context;
+  esi_tag_t type = esi_tag_str_to_type( name_start, length );
 
-  if( !strncmp("esi:try",name_start,length) ) {
-    tag = esi_tag_new(ESI_TRY, ctx);
-  }
-  else if( !strncmp("esi:attempt",name_start,length) ) {
-    tag = esi_tag_new(ESI_ATTEMPT, ctx);
-  }
-  else if( !strncmp("esi:except",name_start,length) ) {
-    tag = esi_tag_new(ESI_EXCEPT, ctx);
-  }
-  else if( !strncmp("esi:include",name_start,length) ) {
-    tag = esi_tag_new(ESI_INCLUDE, ctx);
-  }
-  else if( !strncmp("esi:invalidate",name_start,length) ) {
-    tag = esi_tag_new(ESI_INVALIDATE, ctx);
-  }
-  else if( !strncmp("esi:vars",name_start,length) ) {
-    tag = esi_tag_new(ESI_VARS, ctx);
-  }
-  else if( !strncmp("esi:remove",name_start,length) ) {
-    tag = esi_tag_new(ESI_REMOVE, ctx);
-  }
-  else {
+  if( type == ESI_NONE ) {
     //XXX: invalid tag report it
     printf("invalid start tag\n");debug_string( name_start, length ); printf("\n" );
     return;
   }
+
+  tag = esi_tag_new(type, ctx);
+
   if( ctx->root_tag ) {
     ESITag *last = ctx->root_tag;
     while( last->next ) {
@@ -841,73 +824,23 @@ static void
 esi_end_tag( const void *data, const char *name_start, size_t length, void *context )
 {
   ngx_http_esi_ctx_t *ctx = (ngx_http_esi_ctx_t*)context;
+  esi_tag_t type = esi_tag_str_to_type( name_start, length );
 
-  if( !strncmp("esi:try",name_start,length) && ctx->root_tag ) {
-    if( ctx->root_tag->type == ESI_TRY ) {
-      esi_tag_close( ctx->root_tag );
-      ctx->open_tag = ctx->root_tag = NULL;
-    }
-    else {
-      ctx->open_tag = esi_tag_close_children( ctx->root_tag, ESI_TRY );
-    }
-  }
-  else if( !strncmp("esi:attempt",name_start,length) && ctx->root_tag ) {
-    if( ctx->root_tag->type == ESI_ATTEMPT ) {
-      esi_tag_close( ctx->root_tag );
-      ctx->open_tag = ctx->root_tag = NULL;
-    }
-    else {
-      ctx->open_tag = esi_tag_close_children( ctx->root_tag, ESI_ATTEMPT );
-    }
-  }
-  else if( !strncmp("esi:except",name_start,length) && ctx->root_tag ) {
-    if( ctx->root_tag->type == ESI_EXCEPT ) {
-      esi_tag_close( ctx->root_tag );
-      ctx->open_tag = ctx->root_tag = NULL;
-    }
-    else {
-      ctx->open_tag = esi_tag_close_children( ctx->root_tag, ESI_EXCEPT );
-    }
-  }
-  else if( !strncmp("esi:include",name_start,length) && ctx->root_tag ) {
-    if( ctx->root_tag->type == ESI_INCLUDE ) {
-      esi_tag_close( ctx->root_tag );
-      ctx->open_tag = ctx->root_tag = NULL;
-    }
-    else {
-      ctx->open_tag = esi_tag_close_children( ctx->root_tag, ESI_INCLUDE );
-    }
-  }
-  else if( !strncmp("esi:invalidate",name_start,length) && ctx->root_tag ) {
-    if( ctx->root_tag->type == ESI_INVALIDATE ) {
-      esi_tag_close( ctx->root_tag );
-      ctx->open_tag = ctx->root_tag = NULL;
-    }
-    else {
-      ctx->open_tag = esi_tag_close_children( ctx->root_tag, ESI_INVALIDATE );
-    }
-  }
-  else if( !strncmp("esi:vars",name_start,length) && ctx->root_tag ) {
-    if( ctx->root_tag->type == ESI_VARS ) {
-      esi_tag_close( ctx->root_tag );
-      ctx->open_tag = ctx->root_tag = NULL;
-    }
-    else {
-      ctx->open_tag = esi_tag_close_children( ctx->root_tag, ESI_VARS );
-    }
-  }
-  else if( !strncmp("esi:remove",name_start,length) && ctx->root_tag ) {
-    if( ctx->root_tag->type == ESI_REMOVE ) {
-      esi_tag_close( ctx->root_tag );
-      ctx->open_tag = ctx->root_tag = NULL;
-    }
-    else {
-      ctx->open_tag = esi_tag_close_children( ctx->root_tag, ESI_REMOVE );
-    }
-  }
-  else {
+  if( type == ESI_NONE ) {
     printf("invalid end tag");debug_string( name_start, length ); printf("\n" );
+    return;
   }
+
+  if( ctx->root_tag ) {
+    if( ctx->root_tag->type == type ) {
+      esi_tag_close( ctx->root_tag );
+      ctx->open_tag = ctx->root_tag = NULL;
+    }
+    else {
+      ctx->open_tag = esi_tag_close_children( ctx->root_tag, type );
+    }
+  }
+
 //  printf("end tag:%d ", (int)length ); debug_string( name_start, length ); printf("\n" );
 }
 

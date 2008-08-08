@@ -24,6 +24,32 @@ void esi_tag_free(ESITag *tag)
   free(tag);
 }
 
+esi_tag_t esi_tag_str_to_type( const char *tag_name, size_t length )
+{
+  if( !strncmp("esi:try",tag_name,length) ) {
+    return ESI_TRY;
+  }
+  else if( !strncmp("esi:attempt",tag_name,length) ) {
+    return ESI_ATTEMPT;
+  }
+  else if( !strncmp("esi:except",tag_name,length) ) {
+    return ESI_EXCEPT;
+  }
+  else if( !strncmp("esi:include",tag_name,length) ) {
+    return ESI_INCLUDE;
+  }
+  else if( !strncmp("esi:invalidate",tag_name,length) ) {
+    return ESI_INVALIDATE;
+  }
+  else if( !strncmp("esi:vars",tag_name,length) ) {
+    return ESI_VARS;
+  }
+  else if( !strncmp("esi:remove",tag_name,length) ) {
+    return ESI_REMOVE;
+  }
+  return ESI_NONE;
+}
+
 void esi_tag_start(ESITag *tag)
 {
 //  printf("start "); esi_tag_debug(tag);
