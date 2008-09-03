@@ -19,7 +19,11 @@ struct _HttpProcessor;
 typedef void(*HttpRequestCompleteCB)(struct _HttpRequest*,const char*,size_t,const char*,size_t);
 typedef void(*HttpProcessorErrorCB)(struct _HttpProcessor *, const char*, CURLMcode);
 
-/* handles http requests */
+/* HttpRequest:
+ * Each request gets one of these structs.
+ *
+ * stores the result body and head, passing them to complete_cb after the request completes
+ * */
 typedef struct _HttpRequest {
   CURL *handle;
   HttpRequestCompleteCB complete_cb;
@@ -35,11 +39,16 @@ typedef struct _HttpRequest {
 
 } HttpRequest;
 
+/* create a new request object */
 HttpRequest *http_request_new();
+/* set the request complete callback */
 void http_request_set_complete_cb(HttpRequest *, HttpRequestCompleteCB);
+/* free the new request, this can usually be done within the complete callback */
 void http_request_free( HttpRequest *hr );
 
-/* runs an event loop, for processing http requests */
+/* runs an event loop, for processing http requests
+ * Typically, you'll only want 1 of these structs. It handles the main event loop.
+ **/
 typedef struct _HttpProcessor {
   struct ev_loop *loop;
   struct ev_timer timer_events;
@@ -56,6 +65,13 @@ void http_processor_loop(HttpProcessor *hp);
 void http_processor_free(HttpProcessor *hp);
 void http_processor_set_error_cb(HttpProcessor *, HttpProcessorErrorCB);
 
+/***
+ * Start Example:
+ *
+ * Make 2 concurrent requests, and print the header and body of each response to STDOUT
+ */
+
+/* The complete callback calls http_request_free */ 
 static void on_complete(HttpRequest *hr, const char *head, size_t head_size, const char *body, size_t body_size)
 {
   char *buf = (char*)strndup(head,head_size);
@@ -65,6 +81,7 @@ static void on_complete(HttpRequest *hr, const char *head, size_t head_size, con
   http_request_free(hr);
 }
 
+/* if anything goes wrong, report it and get out */
 static void on_error(HttpProcessor *hp, const char*where, CURLMcode code)
 {
   printf( "error: %s code(%d)\n", where, code );
@@ -73,22 +90,36 @@ static void on_error(HttpProcessor *hp, const char*where, CURLMcode code)
 
 int main(int argc, char **argv)
 {
+  int i = 0;
   HttpProcessor *hp = http_processor_new();
-  HttpRequest *hr = http_request_new();
+  char *samples[] = {"http://www.google.com/","http://www.yahoo.com/"};
 
-  http_request_set_complete_cb(hr, on_complete);
   http_processor_set_error_cb(hp, on_error);
 
-  curl_easy_setopt(hr->handle, CURLOPT_URL, "http://www.google.com/");
+  for( i = 0; i < 2; ++i ) {
+    HttpRequest *hr = http_request_new();
 
-  http_processor_add_request(hp, hr);
+    http_request_set_complete_cb(hr, on_complete);
+
+    curl_easy_setopt(hr->handle, CURLOPT_URL, samples[i]);
+
+    http_processor_add_request(hp, hr);
+  }
 
   http_processor_loop(hp);
 
   http_processor_free(hp);
 
+  puts("\n");
+
   return 0;
 }
+
+/***
+ * End the example.
+ *
+ * What follows is the implementation of the above interface
+ */
 
 /* from http://cool.haxx.se/cvs.cgi/curl/docs/examples/hiperfifo.c */
 static void http_processor_check_http_request_status( HttpProcessor *hp )
